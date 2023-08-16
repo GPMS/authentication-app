@@ -10,6 +10,7 @@ export function GithubIcon({ className = '' }: SvgProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>Github</title>
       <circle cx="21.6614" cy="21.5981" r="20.5" stroke="#828282" />
       <g clipPath="url(#clip0)">
         <path

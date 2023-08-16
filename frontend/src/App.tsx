@@ -14,7 +14,7 @@ function AccountPageLayout() {
           </a>
           <Outlet />
         </div>
-        <div className="flex justify-between mt-2 text-sm text-[#BDBDBD]">
+        <footer className="flex justify-between mt-2 text-sm text-[#BDBDBD]">
           <p>
             created by{' '}
             <a className="underline font-semibold" href="https://github.com/GPMS">
@@ -22,7 +22,7 @@ function AccountPageLayout() {
             </a>
           </p>
           <a href="https://devchallenges.io">devChallenges.io</a>
-        </div>
+        </footer>
       </div>
     </div>
   );

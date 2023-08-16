@@ -10,6 +10,7 @@ export function FacebookIcon({ className = '' }: SvgProps) {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
+      <title>Facebook</title>
       <circle cx="21.8088" cy="21.5981" r="20.5" stroke="#828282" />
       <g clipPath="url(#clip0)">
         <path
