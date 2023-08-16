@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdEmail, MdLock } from 'react-icons/md';
 
 import { FacebookIcon } from '../components/icons/FacebookIcon';
@@ -8,6 +8,12 @@ import { TwitterIcon } from '../components/icons/TwitterIcon';
 import { AccountFormInput } from '../components/AccountFormInput';
 
 export function RegisterPage() {
+  const navigate = useNavigate();
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    console.log('registered');
+    e.preventDefault();
+    navigate('/user/5');
+  }
   return (
     <>
       <header>
@@ -21,7 +27,7 @@ export function RegisterPage() {
           Master web development by making real-life projects. There are multiple paths for you to
           choose
         </p>
-        <form className="grid mt-8 gap-3.5 auto-rows-[3rem]">
+        <form className="grid mt-8 gap-3.5 auto-rows-[3rem]" onSubmit={handleSubmit}>
           <AccountFormInput Icon={MdEmail} type="email" name="email" placeholder="Email" />
           <AccountFormInput Icon={MdLock} type="password" name="password" placeholder="Password" />
           <button className="bg-blue-600 mt-2 rounded-lg text-white">Start coding now</button>
