@@ -5,6 +5,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { LogInPage } from './pages/LogInPage';
 import { PersonalInfoPage } from './pages/PersonalInfoPage';
 import { DropdownMenu } from './components/DropdownMenu';
+import { PersonalInfoEditPage } from './pages/PersonalInfoEditPage';
 
 function AccountPageLayout() {
   return (
@@ -65,6 +66,7 @@ export default function App() {
         </Route>
         <Route path="/user" element={<PersonalInfoLayout />}>
           <Route path=":userid" element={<PersonalInfoPage />} />
+          <Route path=":userid/edit" element={<PersonalInfoEditPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

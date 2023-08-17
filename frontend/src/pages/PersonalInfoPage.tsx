@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 type InfoRowProps = {
   header: string;
@@ -32,9 +33,12 @@ export function PersonalInfoPage() {
             <h2 className="text-2xl text-black dark:text-white">Profile</h2>
             <p className="text-xs text-[#828282]">Some info may be visible to other people</p>
           </div>
-          <button className="text-[#828282] py-2 px-8 border rounded-xl hover:brightness-200">
+          <Link
+            to="/user/5/edit"
+            className="text-[#828282] py-2 px-8 border rounded-xl hover:brightness-200"
+          >
             Edit
-          </button>
+          </Link>
         </div>
         <table className="w-full">
           <tbody className="border-b sm:border-none divide-y">
