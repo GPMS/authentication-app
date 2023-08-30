@@ -5,9 +5,18 @@ interface AccountFormInputProps {
   name: string;
   placeholder: string;
   Icon: IconType;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function AccountFormInput({ type, name, placeholder, Icon }: AccountFormInputProps) {
+export function AccountFormInput({
+  type,
+  name,
+  placeholder,
+  Icon,
+  value,
+  onChange,
+}: AccountFormInputProps) {
   return (
     <div className="relative text-[#828282]">
       <Icon
@@ -20,6 +29,9 @@ export function AccountFormInput({ type, name, placeholder, Icon }: AccountFormI
         name={name}
         placeholder={placeholder}
         id=""
+        value={value}
+        onChange={onChange}
+        required
       />
     </div>
   );

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdEmail, MdLock } from 'react-icons/md';
 
@@ -6,13 +7,29 @@ import { GithubIcon } from '../components/icons/GithubIcon';
 import { GoogleIcon } from '../components/icons/GoogleIcon';
 import { TwitterIcon } from '../components/icons/TwitterIcon';
 import { AccountFormInput } from '../components/AccountFormInput';
+import { UserDTO } from '../types';
+import { AuthService } from '../services';
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    console.log('registered');
+  const [formData, setFormData] = useState<UserDTO>({
+    email: '',
+    password: '',
+  });
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormData((oldData) => ({
+      ...oldData,
+      [e.target.name]: e.target.value,
+    }));
+  }
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    navigate('/user/5');
+    try {
+      const user = await AuthService.registerUser(formData);
+      navigate(`/user/${user.id}`);
+    } catch (e) {
+      console.error(e);
+    }
   }
   return (
     <>
@@ -28,8 +45,22 @@ export function RegisterPage() {
           choose
         </p>
         <form className="grid mt-8 gap-3.5 auto-rows-[3rem]" onSubmit={handleSubmit}>
-          <AccountFormInput Icon={MdEmail} type="email" name="email" placeholder="Email" />
-          <AccountFormInput Icon={MdLock} type="password" name="password" placeholder="Password" />
+          <AccountFormInput
+            Icon={MdEmail}
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => handleChange(e)}
+          />
+          <AccountFormInput
+            Icon={MdLock}
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => handleChange(e)}
+          />
           <button className="bg-blue-600 mt-2 rounded-lg text-white">Start coding now</button>
         </form>
         <div className="flex flex-col gap-5 mt-10 text-center text-[#828282] text-sm">
