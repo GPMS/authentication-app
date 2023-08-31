@@ -55,6 +55,11 @@ function createUser(user) {
   return users.at(-1);
 }
 
+function findUserById(id) {
+  const user = users.find((u) => u.id === id);
+  return user;
+}
+
 function findUserByEmail(email) {
   const user = users.find((u) => u.email === email);
   return user;
@@ -101,6 +106,38 @@ app.post("/auth/login", async (req, res) => {
   res.send({
     accessToken: generateToken({ ...user, password: undefined }),
   });
+});
+
+export function checkTokenMiddleware(req, res, next) {
+  // Get JWT access token from request
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.sendStatus(401);
+
+  // Validate token
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        console.log("Token validation error: Token expired");
+      } else {
+        console.log("Token validation error:", err);
+      }
+      console.log("invalid token");
+      return res.sendStatus(403);
+    }
+    req.userID = user.id;
+    next();
+  });
+}
+
+app.get("/user", checkTokenMiddleware, async (req, res) => {
+  let user = findUserById(req.userID);
+  if (!user) {
+    console.log("no user");
+    res.sendStatus(403);
+    return;
+  }
+  res.send({ ...user, password: undefined });
 });
 
 const server = app.listen(PORT, () => {

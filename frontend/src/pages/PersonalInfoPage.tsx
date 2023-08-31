@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { useUser } from '../hooks/useUser';
 
 type InfoRowProps = {
@@ -22,13 +23,16 @@ function InfoRow({ header, data }: InfoRowProps) {
 }
 
 export function PersonalInfoPage() {
-  const user = useUser();
+  const { user, isLoading } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, navigate, isLoading]);
+  if (isLoading) {
+    return <>Loading...</>;
+  }
   if (!user) {
     return;
   }

@@ -5,13 +5,15 @@ import { useUser } from '../hooks/useUser';
 
 export function PersonalInfoEditPage() {
   const navigate = useNavigate();
-  const user = useUser();
+  const { user, isLoading } = useUser();
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate('/');
     }
-  }, [user, navigate]);
-  if (!user) {
+  }, [user, navigate, isLoading]);
+  if (isLoading) {
+    return <>Loading...</>;
+  }
     return;
   }
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

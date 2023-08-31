@@ -1,12 +1,20 @@
-import jwtDecode from 'jwt-decode';
-import { useLocalStorage } from './useLocalStorage';
+import { useEffect, useState } from 'react';
 import { User } from '../types';
+import { useLocalStorage } from './useLocalStorage';
+import { AuthService } from '../services';
 
-export function useUser(): User | null {
+export function useUser() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { value: accessToken } = useLocalStorage<string>('auth-token');
-  if (!accessToken) {
-    return null;
-  }
-  const user = jwtDecode<User>(accessToken);
-  return user;
+  useEffect(() => {
+    if (!accessToken) return;
+    async function getUser() {
+      const userInfo = await AuthService.getUserInfo(accessToken);
+      setUser(userInfo);
+      setIsLoading(false);
+    }
+    getUser();
+  }, [accessToken]);
+  return { user, isLoading };
 }
