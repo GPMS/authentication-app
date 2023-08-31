@@ -9,8 +9,11 @@ import { TwitterIcon } from '../components/icons/TwitterIcon';
 import { AccountFormInput } from '../components/AccountFormInput';
 import { UserDTO } from '../types';
 import { AuthService } from '../services';
+import { AxiosError } from 'axios';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export function RegisterPage() {
+  const { setLocalStorage: setToken } = useLocalStorage<string>('auth-token');
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UserDTO>({
     email: '',
@@ -25,10 +28,15 @@ export function RegisterPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const user = await AuthService.registerUser(formData);
-      navigate(`/user/${user.id}`);
+      const { accessToken } = await AuthService.registerUser(formData);
+      setToken(accessToken);
+      navigate(`/user`);
     } catch (e) {
-      console.error(e);
+      if (e instanceof AxiosError) {
+        if (e.response && e.response.status === 409) {
+          console.error('Email already registered');
+        }
+      }
     }
   }
   return (

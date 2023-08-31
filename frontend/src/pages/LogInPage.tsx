@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdEmail, MdLock } from 'react-icons/md';
+import { AxiosError } from 'axios';
 
 import { FacebookIcon } from '../components/icons/FacebookIcon';
 import { GithubIcon } from '../components/icons/GithubIcon';
@@ -9,8 +10,10 @@ import { TwitterIcon } from '../components/icons/TwitterIcon';
 import { AccountFormInput } from '../components/AccountFormInput';
 import { UserDTO } from '../types';
 import { AuthService } from '../services';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export function LogInPage() {
+  const { setLocalStorage: setToken } = useLocalStorage<string>('auth-token');
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UserDTO>({
     email: '',
@@ -25,10 +28,15 @@ export function LogInPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const user = await AuthService.loginUser(formData);
-      navigate(`/user/${user.id}`);
+      const { accessToken } = await AuthService.loginUser(formData);
+      setToken(accessToken);
+      navigate(`/user`);
     } catch (e) {
-      console.error(e);
+      if (e instanceof AxiosError) {
+        if (e.response && e.response.status === 403) {
+          console.error('Invalid email/password!');
+        }
+      }
     }
   }
   return (

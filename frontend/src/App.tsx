@@ -1,4 +1,4 @@
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
 import { DevChallengesIcon } from './components/icons/DevChallengesIcons';
 import { RegisterPage } from './pages/RegisterPage';
@@ -61,12 +61,13 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AccountPageLayout />}>
-          <Route index element={<RegisterPage />} />
+          <Route index element={<Navigate to="/login" />} />
+          <Route path="/register" index element={<RegisterPage />} />
           <Route path="/login" element={<LogInPage />} />
         </Route>
         <Route path="/user" element={<PersonalInfoLayout />}>
-          <Route path=":userid" element={<PersonalInfoPage />} />
-          <Route path=":userid/edit" element={<PersonalInfoEditPage />} />
+          <Route index element={<PersonalInfoPage />} />
+          <Route path="edit" element={<PersonalInfoEditPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

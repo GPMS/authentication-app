@@ -1,7 +1,17 @@
 export type User = {
   id: string;
   email: string;
-  password: string;
+  photo: string;
+  name: string;
+  bio: string;
+  phone: string;
 };
 
-export type UserDTO = Pick<User, 'email' | 'password'>;
+export type AuthResponse = {
+  accessToken: string;
+};
+
+export type UserDTO = {
+  email: string;
+  password: string;
+};

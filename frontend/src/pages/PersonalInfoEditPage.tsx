@@ -1,15 +1,26 @@
+import { useEffect } from 'react';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../hooks/useUser';
 
 export function PersonalInfoEditPage() {
   const navigate = useNavigate();
+  const user = useUser();
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+  if (!user) {
+    return;
+  }
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    navigate('/user/5');
+    navigate('/user');
   }
   return (
     <>
-      <Link to="/user/5" className="flex items-center gap-2 text-[#2D9CDB] mt-2 mb-6">
+      <Link to="/user" className="flex items-center gap-2 text-[#2D9CDB] mt-2 mb-6">
         <MdArrowBackIosNew /> Back
       </Link>
       <div className="sm:border rounded-xl py-7 px-12">

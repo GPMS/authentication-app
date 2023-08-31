@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { ReactNode, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../hooks/useUser';
 
 type InfoRowProps = {
   header: string;
@@ -21,6 +22,16 @@ function InfoRow({ header, data }: InfoRowProps) {
 }
 
 export function PersonalInfoPage() {
+  const user = useUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+  if (!user) {
+    return;
+  }
   return (
     <>
       <div className="text-center text-black dark:text-white tracking-tighter my-11">
@@ -34,7 +45,7 @@ export function PersonalInfoPage() {
             <p className="text-xs text-[#828282]">Some info may be visible to other people</p>
           </div>
           <Link
-            to="/user/5/edit"
+            to="/user/edit"
             className="text-[#828282] py-2 px-8 border rounded-xl hover:brightness-200"
           >
             Edit
@@ -47,20 +58,17 @@ export function PersonalInfoPage() {
               data={
                 <img
                   className="rounded-lg"
-                  src="https://source.unsplash.com/random/72x72?sig=1"
+                  src={user.photo}
                   width={72}
                   height={72}
                   alt="profile picture"
                 />
               }
             />
-            <InfoRow header="name" data="Xanthe Neal" />
-            <InfoRow
-              header="Bio"
-              data="I am a software developer and a big fan of devchallenges..."
-            />
-            <InfoRow header="phone" data="908249274292" />
-            <InfoRow header="email" data="xanthe.neal@gmail.com" />
+            <InfoRow header="name" data={user.name} />
+            <InfoRow header="Bio" data={user.bio} />
+            <InfoRow header="phone" data={user.phone} />
+            <InfoRow header="email" data={user.email} />
             <InfoRow header="password" data="************" />
           </tbody>
         </table>
