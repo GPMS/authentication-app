@@ -65,9 +65,8 @@ app.post("/auth/register", async (req, res) => {
     password: hashedPassword,
   });
   const createdUser = users.at(-1);
-  createdUser.password = undefined;
   res.status(201).send({
-    accessToken: generateToken(createdUser),
+    accessToken: generateToken({ ...createdUser, password: undefined }),
   });
 });
 
@@ -88,9 +87,8 @@ app.post("/auth/login", async (req, res) => {
     res.sendStatus(403);
     return;
   }
-  user.password = undefined;
   res.send({
-    accessToken: generateToken(user),
+    accessToken: generateToken({ ...user, password: undefined }),
   });
 });
 
