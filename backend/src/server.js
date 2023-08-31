@@ -12,7 +12,7 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-const users = [
+let users = [
   {
     id: "1",
     email: "a@a",
