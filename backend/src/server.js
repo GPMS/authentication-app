@@ -65,6 +65,10 @@ function findUserByEmail(email) {
   return user;
 }
 
+function removeUserById(id) {
+  users = users.filter((u) => u.id !== id);
+}
+
 app.post("/auth/register", async (req, res) => {
   console.log("register");
   const { email, password } = req.body;
@@ -99,6 +103,7 @@ app.post("/auth/login", async (req, res) => {
     res.sendStatus(403);
     return;
   }
+  console.log(req.body, user);
   if (!(await verifyPassword(password, user.password))) {
     res.sendStatus(403);
     return;
@@ -138,6 +143,30 @@ app.get("/user", checkTokenMiddleware, async (req, res) => {
     return;
   }
   res.send({ ...user, password: undefined });
+});
+
+app.put("/user", checkTokenMiddleware, async (req, res) => {
+  const { email, password } = req.body;
+  let user = findUserById(req.userID);
+  if (!user) {
+    console.log("no user");
+    res.sendStatus(403);
+    return;
+  }
+  removeUserById(req.userId);
+  for (const key in user) {
+    if (req.body[key]) {
+      if (key === "password") {
+        user[key] = await hashPassword(req.body[key]);
+      } else {
+        user[key] = req.body[key];
+      }
+    }
+  }
+  createUser(user);
+  res.send({
+    accessToken: generateToken({ ...user, password: undefined }),
+  });
 });
 
 const server = app.listen(PORT, () => {

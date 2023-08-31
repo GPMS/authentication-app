@@ -1,24 +1,58 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+
 import { useUser } from '../hooks/useUser';
+import { AuthService } from '../services';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { User } from '../types';
 
 export function PersonalInfoEditPage() {
   const navigate = useNavigate();
   const { user, isLoading } = useUser();
+  const [formData, setFormData] = useState<Partial<User> | null>(null);
+  const { value: token, setLocalStorage: setToken } = useLocalStorage<string>('auth-token');
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/');
+      return;
+    }
+    if (user) {
+      setFormData(user);
     }
   }, [user, navigate, isLoading]);
   if (isLoading) {
     return <>Loading...</>;
   }
+  if (!formData) {
     return;
   }
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setFormData((old) => ({
+      ...old!,
+      [e.target.name]: e.target.value,
+    }));
+  }
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    navigate('/user');
+    try {
+      let key: keyof User;
+      for (key in formData) {
+        if (formData![key] === user![key]) {
+          formData![key] = undefined;
+        }
+      }
+      const { accessToken } = await AuthService.updateUser(formData!, token);
+      setToken(accessToken);
+      navigate('/user');
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        if (e.response && e.response.status === 403) {
+          console.error('Invalid email/password!');
+        }
+      }
+    }
   }
   return (
     <>
@@ -51,6 +85,8 @@ export function PersonalInfoEditPage() {
               name="name"
               id="name"
               placeholder="Enter your name..."
+              value={formData!.name}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -60,6 +96,8 @@ export function PersonalInfoEditPage() {
               name="bio"
               id="bio"
               placeholder="Enter your bio..."
+              value={formData!.bio}
+              onChange={handleChange}
             ></textarea>
           </div>
           <div>
@@ -70,6 +108,8 @@ export function PersonalInfoEditPage() {
               name="phone"
               id="phone"
               placeholder="Enter your phone..."
+              value={formData!.phone}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -80,6 +120,8 @@ export function PersonalInfoEditPage() {
               name="email"
               id="email"
               placeholder="Enter your email..."
+              value={formData!.email}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -90,6 +132,8 @@ export function PersonalInfoEditPage() {
               name="password"
               id="password"
               placeholder="Enter your password..."
+              value={formData!.password}
+              onChange={handleChange}
             />
           </div>
           <button className="bg-blue-600 mt-1 py-2 px-6 rounded-lg text-white">Save</button>

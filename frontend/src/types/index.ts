@@ -5,6 +5,7 @@ export type User = {
   name: string;
   bio: string;
   phone: string;
+  password?: string;
 };
 
 export type AuthResponse = {

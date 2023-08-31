@@ -28,4 +28,16 @@ export const AuthService = {
     });
     return data;
   },
+  updateUser: async (user: Partial<User>, accessToken: string) => {
+    const { data } = await api.put<AuthResponse>(
+      '/user',
+      {
+        ...user,
+      },
+      {
+        headers: { authorization: `Bearer ${accessToken}` },
+      },
+    );
+    return data;
+  },
 };
