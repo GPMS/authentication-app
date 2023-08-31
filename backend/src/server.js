@@ -47,6 +47,19 @@ async function hashPassword(password) {
   return await bcrypt.hash(password, 10);
 }
 
+function createUser(user) {
+  users.push({
+    ...user,
+    id: (users.length + 1).toString(),
+  });
+  return users.at(-1);
+}
+
+function findUserByEmail(email) {
+  const user = users.find((u) => u.email === email);
+  return user;
+}
+
 app.post("/auth/register", async (req, res) => {
   console.log("register");
   const { email, password } = req.body;
@@ -54,17 +67,15 @@ app.post("/auth/register", async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  if (users.find((u) => u.email === email)) {
+  if (findUserByEmail(email)) {
     res.sendStatus(409);
     return;
   }
   const hashedPassword = await hashPassword(password);
-  users.push({
-    id: (users.length + 1).toString(),
+  const createdUser = createUser({
     email,
-    password: hashedPassword,
+    password: hashPassword,
   });
-  const createdUser = users.at(-1);
   res.status(201).send({
     accessToken: generateToken({ ...createdUser, password: undefined }),
   });
@@ -77,7 +88,7 @@ app.post("/auth/login", async (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const user = users.find((u) => u.email === email);
+  const user = findUserByEmail(email);
   if (!user) {
     console.log("no user");
     res.sendStatus(403);
