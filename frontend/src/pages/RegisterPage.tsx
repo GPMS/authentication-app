@@ -10,10 +10,10 @@ import { AccountFormInput } from '../components/AccountFormInput';
 import { UserDTO } from '../types';
 import { AuthService } from '../services';
 import { AxiosError } from 'axios';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useToken } from '../hooks/useToken';
 
 export function RegisterPage() {
-  const { setLocalStorage: setToken } = useLocalStorage<string>('auth-token');
+  const { setToken } = useToken();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UserDTO>({
     email: '',

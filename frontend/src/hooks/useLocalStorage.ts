@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export function useLocalStorage<T>(key: string, defaultValue?: T) {
-  const [value, setValue] = useState<T>(() => {
+  const [value, setValue] = useState<T | null>(() => {
     let currentValue;
     try {
       currentValue = JSON.parse(localStorage.getItem(key) || String(defaultValue));
@@ -14,5 +14,8 @@ export function useLocalStorage<T>(key: string, defaultValue?: T) {
     localStorage.setItem(key, JSON.stringify(newValue));
     setValue(newValue);
   }
-  return { value, setLocalStorage };
+  function removeLocalStorage() {
+    localStorage.removeItem(key);
+  }
+  return { value, setLocalStorage, removeLocalStorage };
 }

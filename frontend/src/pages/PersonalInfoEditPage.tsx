@@ -7,12 +7,13 @@ import { useUser } from '../hooks/useUser';
 import { AuthService } from '../services';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { User } from '../types';
+import { useToken } from '../hooks/useToken';
 
 export function PersonalInfoEditPage() {
   const navigate = useNavigate();
   const { user, isLoading } = useUser();
   const [formData, setFormData] = useState<Partial<User> | null>(null);
-  const { value: token, setLocalStorage: setToken } = useLocalStorage<string>('auth-token');
+  const { token, setToken } = useToken();
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/');
@@ -43,7 +44,7 @@ export function PersonalInfoEditPage() {
           formData![key] = undefined;
         }
       }
-      const { accessToken } = await AuthService.updateUser(formData!, token);
+      const { accessToken } = await AuthService.updateUser(formData!, token!);
       setToken(accessToken);
       navigate('/user');
     } catch (e) {
