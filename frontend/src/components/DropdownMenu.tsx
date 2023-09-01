@@ -1,30 +1,31 @@
 import { MdAccountCircle, MdGroup, MdOutlineExitToApp } from 'react-icons/md';
 import { ReactNode, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IconType } from 'react-icons';
 
+import { useToken } from '../hooks/useToken';
+
 type DropdownItemProp = {
-  link: string;
   Icon: IconType;
   children: ReactNode;
   className?: string;
 };
-function DropdownMenuItem({ Icon, link, children, className }: DropdownItemProp) {
+
+function DropdownMenuItem({ Icon, children, className }: DropdownItemProp) {
   return (
-    <li>
-      <Link
-        to={link}
-        className={`flex items-center gap-2 p-1 sm:p-3 text-xs rounded-md hover:text-[#4F4F4F] hover:bg-[#f2f2f2] ${className}`}
-      >
-        <Icon className="w-[15px] h-[15px] sm:w-[20px] sm:h-[20px]" />
-        {children}
-      </Link>
+    <li
+      className={`flex items-center gap-2 p-1 sm:p-3 text-xs rounded-md hover:text-[#4F4F4F] hover:bg-[#f2f2f2] ${className}`}
+    >
+      <Icon className="w-[15px] h-[15px] sm:w-[20px] sm:h-[20px]" />
+      {children}
     </li>
   );
 }
 
 export function DropdownMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { removeToken } = useToken();
 
   const flipTriangle = isOpen
     ? 'border-b-[5px] border-b-[#333] dark:border-b-[#e0e0e0]' // Point up
@@ -37,6 +38,11 @@ export function DropdownMenu() {
   const showText = `${
     isOpen ? 'opacity-100' : 'opacity-0'
   } transition-[opacity] origin-top delay-150 duration-200 ease-in`;
+
+  async function handleLogOut() {
+    removeToken();
+    navigate('/');
+  }
 
   return (
     <div className="relative">
@@ -57,19 +63,18 @@ export function DropdownMenu() {
         className={`${openAnimation} w-[188px] flex py-3 px-3 sm:px-6 rounded-xl absolute right-0 top-[calc(100%+1rem)] bg-white dark:bg-[#252329] border border-[#E0E0E0]`}
       >
         <ul className={`${showText} space-y-4 text-[#4F4F4F] dark:text-[#E0E0E0]`}>
-          <DropdownMenuItem Icon={MdAccountCircle} link="/user/5">
-            My Profile
+          <DropdownMenuItem Icon={MdAccountCircle}>
+            <Link to="/user">My Profile</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem Icon={MdGroup} link="#">
-            Group Chat
+          <DropdownMenuItem Icon={MdGroup}>
+            <Link to="#">Group Chat</Link>
           </DropdownMenuItem>
           <hr className="border-[#E0E0E0]" />
           <DropdownMenuItem
             Icon={MdOutlineExitToApp}
-            link="/"
             className="flex items-center gap-2 text-[#EB5757]"
           >
-            Log Out
+            <button onClick={handleLogOut}>Log Out</button>
           </DropdownMenuItem>
         </ul>
       </nav>
