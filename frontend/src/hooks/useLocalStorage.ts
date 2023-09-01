@@ -10,12 +10,15 @@ export function useLocalStorage<T>(key: string, defaultValue?: T) {
     }
     return currentValue;
   });
+
   function setLocalStorage(newValue: T) {
     localStorage.setItem(key, JSON.stringify(newValue));
     setValue(newValue);
   }
+
   function removeLocalStorage() {
     localStorage.removeItem(key);
   }
+
   return { value, setLocalStorage, removeLocalStorage };
 }

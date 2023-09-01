@@ -14,17 +14,20 @@ import { useToken } from '../hooks/useToken';
 
 export function RegisterPage() {
   const { setToken } = useToken();
-  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<UserDTO>({
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((oldData) => ({
       ...oldData,
       [e.target.name]: e.target.value,
     }));
   }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
@@ -39,6 +42,7 @@ export function RegisterPage() {
       }
     }
   }
+
   return (
     <>
       <header>

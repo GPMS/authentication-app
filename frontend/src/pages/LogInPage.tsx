@@ -19,12 +19,14 @@ export function LogInPage() {
     email: '',
     password: '',
   });
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((oldData) => ({
       ...oldData,
       [e.target.name]: e.target.value,
     }));
   }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
@@ -39,6 +41,7 @@ export function LogInPage() {
       }
     }
   }
+
   return (
     <>
       <header>

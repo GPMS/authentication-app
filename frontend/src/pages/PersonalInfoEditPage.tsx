@@ -5,7 +5,6 @@ import { AxiosError } from 'axios';
 
 import { useUser } from '../hooks/useUser';
 import { AuthService } from '../services';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { User } from '../types';
 import { useToken } from '../hooks/useToken';
 
@@ -14,6 +13,7 @@ export function PersonalInfoEditPage() {
   const { user, isLoading } = useUser();
   const [formData, setFormData] = useState<Partial<User> | null>(null);
   const { token, setToken } = useToken();
+
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/');
@@ -23,18 +23,22 @@ export function PersonalInfoEditPage() {
       setFormData(user);
     }
   }, [user, navigate, isLoading]);
+
   if (isLoading) {
     return <>Loading...</>;
   }
+
   if (!formData) {
     return;
   }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFormData((old) => ({
       ...old!,
       [e.target.name]: e.target.value,
     }));
   }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
@@ -55,6 +59,7 @@ export function PersonalInfoEditPage() {
       }
     }
   }
+
   return (
     <>
       <Link to="/user" className="flex items-center gap-2 text-[#2D9CDB] mt-2 mb-6">

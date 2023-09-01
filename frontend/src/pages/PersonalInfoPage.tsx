@@ -25,17 +25,21 @@ function InfoRow({ header, data }: InfoRowProps) {
 export function PersonalInfoPage() {
   const { user, isLoading } = useUser();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/');
     }
   }, [user, navigate, isLoading]);
+
   if (isLoading) {
     return <>Loading...</>;
   }
+
   if (!user) {
     return;
   }
+
   return (
     <>
       <div className="text-center text-black dark:text-white tracking-tighter my-11">

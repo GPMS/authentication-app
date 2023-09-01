@@ -7,6 +7,7 @@ export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { value: accessToken } = useLocalStorage<string>('auth-token');
+
   useEffect(() => {
     if (!accessToken) return;
     async function getUser() {
@@ -16,5 +17,6 @@ export function useUser() {
     }
     getUser();
   }, [accessToken]);
+
   return { user, isLoading };
 }
