@@ -10,7 +10,12 @@ const PORT = 3000;
 
 dotenv.config();
 
-app.use(cors());
+const corsOptions = {
+  methods: "GET,PUT,POST",
+  origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "",
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 authRoutes(app);
