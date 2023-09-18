@@ -14,12 +14,7 @@ let shuttingDown = false;
 
 dotenv.config();
 
-const corsOptions = {
-  methods: "GET,PUT,POST",
-  origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "",
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use((_, resp, next) => {
