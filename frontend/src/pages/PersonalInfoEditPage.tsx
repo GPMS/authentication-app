@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MdArrowBackIosNew } from 'react-icons/md';
+import { MdArrowBackIosNew, MdCameraAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
@@ -45,9 +45,10 @@ export function PersonalInfoEditPage() {
       let key: keyof User;
       for (key in formData) {
         if (formData![key] === user![key]) {
-          formData![key] = undefined;
+          delete formData![key];
         }
       }
+      console.log(formData);
       const { accessToken } = await AuthService.updateUser(formData!, token!);
       setToken(accessToken);
       navigate('/user');
@@ -71,16 +72,29 @@ export function PersonalInfoEditPage() {
           <p className="text-xs text-[#828282]">Changes will be reflected to every services</p>
         </div>
         <div className="flex items-center gap-7 my-6">
-          <img
-            className="rounded-lg"
-            src="https://source.unsplash.com/random/72x72?sig=1"
-            width={72}
-            height={72}
-            alt="profile picture"
+          <div className="relative">
+            <img
+              className="rounded-lg"
+              src={
+                formData.photo ?? user?.photo ?? 'https://source.unsplash.com/random/72x72?sig=1'
+              }
+              width={72}
+              height={72}
+              alt="profile picture"
+            />
+            <MdCameraAlt
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-black rounded"
+              tabIndex={0}
+            />
+          </div>
+          <input
+            className="text-[#828282] bg-transparent hover:text-black dark:hover:text-white max-w-full"
+            name="photo"
+            placeholder="CHANGE PHOTO"
+            id="photo"
+            size={40}
+            onChange={handleChange}
           />
-          <button className="text-[#828282] hover:text-black dark:hover:text-white">
-            Change Photo
-          </button>
         </div>
         <form className="space-y-6 text-[13px]" onSubmit={(e) => handleSubmit(e)}>
           <div>
