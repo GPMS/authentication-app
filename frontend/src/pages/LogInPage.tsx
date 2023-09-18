@@ -77,7 +77,7 @@ export function LogInPage() {
           </div>
           <p>
             Don&apos;t have an account yet?{' '}
-            <Link to="/" className="text-blue-600">
+            <Link to="/register" className="text-blue-600">
               Register
             </Link>
           </p>
