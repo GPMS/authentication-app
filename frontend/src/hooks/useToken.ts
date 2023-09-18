@@ -1,11 +1,11 @@
-import { useLocalStorage } from './useLocalStorage';
+import { useLocalStorage } from 'usehooks-ts';
 
 export function useToken() {
-  const {
-    value: token,
-    setLocalStorage: setToken,
-    removeLocalStorage: removeToken,
-  } = useLocalStorage<string>('auth-token');
+  const [token, setToken] = useLocalStorage('auth-token', '');
+
+  function removeToken() {
+    localStorage.removeItem('auth-token');
+  }
 
   return { token, setToken, removeToken };
 }
