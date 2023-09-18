@@ -27,6 +27,10 @@ app.use((_, resp, next) => {
   resp.send(503, "Server is in the process of shutting down");
 });
 
+app.get("/", (req, res) => {
+  res.send({ message: "Welcome to my app" });
+});
+
 authRoutes(app);
 userRoutes(app);
 
