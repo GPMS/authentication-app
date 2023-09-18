@@ -7,7 +7,7 @@ import { userRoutes } from "./routes/user.routes.js";
 import { connectDB, disconnectDB } from "./db.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 let shuttingDown = false;
 
 dotenv.config();

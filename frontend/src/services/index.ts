@@ -3,7 +3,9 @@ import axios from 'axios';
 import { AuthResponse, UserDTO, User } from '../types';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.DEV
+    ? 'http://localhost:5000'
+    : 'https://authentication-app-backend-lovat.vercel.app/',
   timeout: 1000,
 });
 
