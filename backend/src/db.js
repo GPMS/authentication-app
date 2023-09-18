@@ -16,7 +16,9 @@ const COLLECTIONS = {
 
 export async function connectDB() {
   try {
-    client = new MongoClient(process.env.DB_URL ?? "mongodb://127.0.0.1:27017");
+    const databaseURL = process.env.DB_URL ?? "mongodb://127.0.0.1:27017";
+    console.log("INFO: DB: Trying to connect to", databaseURL);
+    client = new MongoClient(databaseURL);
     await client.connect();
     db = client.db("authentication-app");
     console.log("INFO: DB: Successfully connected.");
