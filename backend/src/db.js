@@ -1,49 +1,61 @@
-import { hashPassword } from "./util.js";
+import { MongoClient, Db, ObjectId } from "mongodb";
 
-export let users = [
-  {
-    id: "1",
-    email: "a@a",
-    password: "$2b$10$mxZbU8EKCmVslSN08BPg0.wsG1RV/1Dga8dAjGJzF4i/fMSKMw/VO", // aaa
-    photo: "https://source.unsplash.com/random/72x72?sig=1",
-    name: "Xanthe Neal",
-    bio: "I am a software developer and a big fan of devchallenges...",
-    phone: "908249274292",
-  },
-];
+/**
+ * @type MongoClient | null
+ */
+let client = null;
 
-export function createUser(user) {
+/**
+ * @type Db | null
+ */
+export let db = null;
+
+const COLLECTIONS = {
+  USERS: "users",
+};
+
+export async function connectDB() {
+  try {
+    client = new MongoClient(process.env.DB_URL ?? "mongodb://127.0.0.1:27017");
+    await client.connect();
+    db = client.db("authentication-app");
+    console.log("INFO: DB: Successfully connected.");
+  } catch (e) {
+    console.log("ERROR: DB: Unable to connect!\n", e);
+    process.exit(1);
+  }
+}
+
+export async function disconnectDB() {
+  await client.close();
+  client = null;
+  db = null;
+  console.log("INFO: DB: Connection closed.");
+}
+
+export async function createUser(user) {
+  const { insertedId: userID } = await db
+    .collection(COLLECTIONS.USERS)
+    .insertOne(user);
   const createdUser = {
     ...user,
-    id: (users.length + 1).toString(),
+    id: userID,
   };
-  users.push(createdUser);
   return createdUser;
 }
 
-/**
- *
- * @param {string} id
- */
-export function removeUserById(id) {
-  users = users.filter((u) => u.id !== id);
-}
-
 export async function updateUser(userId, fieldsToUpdate) {
-  console.log("updateUser:userId", userId, "fieldsToUpdate", fieldsToUpdate);
-  let user = findUserById(userId);
-  if (!user) return;
-  removeUserById(userId);
-  for (const key in user) {
-    if (fieldsToUpdate[key]) {
-      if (key === "password") {
-        user[key] = await hashPassword(fieldsToUpdate[key]);
-      } else {
-        user[key] = fieldsToUpdate[key];
-      }
-    }
+  const user = await db.collection(COLLECTIONS.USERS).findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    {
+      $set: fieldsToUpdate,
+    },
+    { returnDocument: "after" }
+  );
+  if (user) {
+    user.id = user._id;
+    delete user._id;
   }
-  createUser(user);
   return user;
 }
 
@@ -51,8 +63,14 @@ export async function updateUser(userId, fieldsToUpdate) {
  *
  * @param {string} id
  */
-export function findUserById(id) {
-  const user = users.find((u) => u.id === id);
+export async function findUserById(id) {
+  const user = await db
+    .collection(COLLECTIONS.USERS)
+    .findOne({ _id: new ObjectId(id) });
+  if (user) {
+    user.id = user._id;
+    delete user._id;
+  }
   return user;
 }
 
@@ -60,7 +78,11 @@ export function findUserById(id) {
  *
  * @param {string} email
  */
-export function findUserByEmail(email) {
-  const user = users.find((u) => u.email === email);
+export async function findUserByEmail(email) {
+  const user = await db.collection(COLLECTIONS.USERS).findOne({ email });
+  if (user) {
+    user.id = user._id;
+    delete user._id;
+  }
   return user;
 }

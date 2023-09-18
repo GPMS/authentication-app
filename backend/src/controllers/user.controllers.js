@@ -1,9 +1,9 @@
-import { findUserById, updateUser, users } from "../db.js";
-import { generateToken } from "../util.js";
+import { findUserById, updateUser } from "../db.js";
+import { generateToken, hashPassword } from "../util.js";
 
-export function getUserInfo(req, res) {
+export async function getUserInfo(req, res) {
   console.log("getUserInfo");
-  let user = findUserById(req.userId);
+  let user = await findUserById(req.userId);
   if (!user) {
     console.log("no user with id", req.userId);
     res.sendStatus(403);
@@ -13,14 +13,18 @@ export function getUserInfo(req, res) {
 }
 export async function updateUserInfo(req, res) {
   console.log("updateUserInfo");
-  const { email, password } = req.body;
-  const user = await updateUser(req.userId, req.body);
-  if (!user) {
+  for (const key in req.body) {
+    if (key === "password") {
+      req.body.password = hashPassword(req.body.password);
+    }
+  }
+  const updatedUser = await updateUser(req.userId, req.body);
+  if (!updatedUser) {
     console.log("no user with id", req.userId);
     res.sendStatus(403);
     return;
   }
   res.send({
-    accessToken: generateToken({ ...user, password: undefined }),
+    accessToken: generateToken({ ...updatedUser, password: undefined }),
   });
 }

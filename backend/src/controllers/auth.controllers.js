@@ -1,5 +1,5 @@
 import { hashPassword, verifyPassword, generateToken } from "../util.js";
-import { createUser, findUserByEmail, users } from "../db.js";
+import { createUser, findUserByEmail } from "../db.js";
 
 export async function register(req, res) {
   console.log("Register");
@@ -8,13 +8,13 @@ export async function register(req, res) {
     res.sendStatus(400);
     return;
   }
-  if (findUserByEmail(email)) {
+  if (await findUserByEmail(email)) {
     console.log(`User with email ${email} already exists`);
     res.sendStatus(409);
     return;
   }
   const hashedPassword = await hashPassword(password);
-  const createdUser = createUser({
+  const createdUser = await createUser({
     email,
     password: hashedPassword,
   });
@@ -30,7 +30,7 @@ export async function login(req, res) {
     res.sendStatus(400);
     return;
   }
-  const user = findUserByEmail(email);
+  const user = await findUserByEmail(email);
   if (!user || !(await verifyPassword(password, user.password))) {
     console.log("Invalid email or password");
     res.sendStatus(403);
