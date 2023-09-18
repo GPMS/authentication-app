@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IconType } from 'react-icons';
 
 import { useToken } from '../hooks/useToken';
+import { useUser } from '../hooks/useUser';
 
 type DropdownItemProp = {
   Icon: IconType;
@@ -26,6 +27,7 @@ export function DropdownMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { removeToken } = useToken();
+  const { user, isLoading } = useUser();
 
   const flipTriangle = isOpen
     ? 'border-b-[5px] border-b-[#333] dark:border-b-[#e0e0e0]' // Point up
@@ -44,17 +46,21 @@ export function DropdownMenu() {
     navigate('/');
   }
 
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+
   return (
     <div className="relative">
       <button className="flex items-center gap-5" onClick={() => setIsOpen((open) => !open)}>
         <img
           className="rounded-lg"
-          src="https://source.unsplash.com/random/32x36?sig=1"
+          src={user?.photo ?? 'https://source.unsplash.com/random/32x36?sig=1'}
           width="32"
           height="36"
           alt=""
         />
-        <p className="hidden sm:inline-block">User Name</p>
+        <p className="hidden sm:inline-block">{user?.name}</p>
         <div
           className={`${flipTriangle} w-0 h-0 border-l-[5px] border-l-transparent border-r-transparent border-r-[5px] hidden sm:block`}
         ></div>
