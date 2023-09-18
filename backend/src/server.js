@@ -6,7 +6,7 @@ import { authRoutes } from "./routes/auth.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { connectDB, disconnectDB } from "./db.js";
 
-console.log("INFO: Starting Express.js application");
+console.info("INFO: Starting Express.js application");
 
 const app = express();
 const PORT = 5000;
@@ -33,7 +33,7 @@ userRoutes(app);
 
 await connectDB();
 const server = app.listen(PORT, () => {
-  console.log(`INFO: Listening on port ${PORT}...`);
+  console.info(`INFO: Listening on port ${PORT}...`);
 });
 
 function cleanup() {

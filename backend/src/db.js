@@ -17,13 +17,13 @@ const COLLECTIONS = {
 export async function connectDB() {
   try {
     const databaseURL = process.env.DB_URL ?? "mongodb://127.0.0.1:27017";
-    console.log("INFO: DB: Trying to connect to", databaseURL);
+    console.info("INFO: DB: Trying to connect to", databaseURL);
     client = new MongoClient(databaseURL);
     await client.connect();
     db = client.db("authentication-app");
-    console.log("INFO: DB: Successfully connected.");
+    console.info("INFO: DB: Successfully connected.");
   } catch (e) {
-    console.log("ERROR: DB: Unable to connect!\n", e);
+    console.error("ERROR: DB: Unable to connect!\n", e);
     process.exit(1);
   }
 }
@@ -32,7 +32,7 @@ export async function disconnectDB() {
   await client.close();
   client = null;
   db = null;
-  console.log("INFO: DB: Connection closed.");
+  console.info("INFO: DB: Connection closed.");
 }
 
 export async function createUser(user) {

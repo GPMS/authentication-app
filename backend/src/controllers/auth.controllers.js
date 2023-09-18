@@ -2,14 +2,14 @@ import { hashPassword, verifyPassword, generateToken } from "../util.js";
 import { createUser, findUserByEmail } from "../db.js";
 
 export async function register(req, res) {
-  console.log("Register");
+  console.info("Register");
   const { email, password } = req.body;
   if (!password || !email) {
     res.sendStatus(400);
     return;
   }
   if (await findUserByEmail(email)) {
-    console.log(`User with email ${email} already exists`);
+    console.warn(`User with email ${email} already exists`);
     res.sendStatus(409);
     return;
   }
@@ -24,7 +24,7 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
-  console.log("Login");
+  console.info("Login");
   const { email, password } = req.body;
   if (!password || !email) {
     res.sendStatus(400);
@@ -32,7 +32,7 @@ export async function login(req, res) {
   }
   const user = await findUserByEmail(email);
   if (!user || !(await verifyPassword(password, user.password))) {
-    console.log("Invalid email or password");
+    console.warn("Invalid email or password");
     res.sendStatus(403);
     return;
   }

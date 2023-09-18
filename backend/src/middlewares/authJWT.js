@@ -15,11 +15,11 @@ export async function verifyToken(req, res, next) {
   } catch (err) {
     if (err) {
       if (err instanceof jwt.TokenExpiredError) {
-        console.log("Token validation error: Token expired");
+        console.warn("Token validation error: Token expired");
       } else {
-        console.log("Token validation error:", err);
+        console.warn("Token validation error:", err);
       }
-      console.log("invalid token");
+      console.warn("invalid token");
       return res.sendStatus(403);
     }
   }
