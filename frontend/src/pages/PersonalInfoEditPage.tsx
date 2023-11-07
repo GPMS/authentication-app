@@ -7,6 +7,7 @@ import { useUser } from '../hooks/useUser';
 import { AuthService } from '../services';
 import { User } from '../types';
 import { useToken } from '../hooks/useToken';
+import { toast } from 'sonner';
 
 export function PersonalInfoEditPage() {
   const navigate = useNavigate();
@@ -41,24 +42,31 @@ export function PersonalInfoEditPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    try {
-      let key: keyof User;
-      for (key in formData) {
-        if (formData![key] === user![key]) {
-          delete formData![key];
+    toast.promise(
+      async () => {
+        try {
+          let key: keyof User;
+          for (key in formData) {
+            if (formData![key] === user![key]) {
+              delete formData![key];
+            }
+          }
+          const { accessToken } = await AuthService.updateUser(formData!, token!);
+          setToken(accessToken);
+          navigate('/user');
+        } catch (e) {
+          if (e instanceof AxiosError) {
+            if (e.response && e.response.status === 403) {
+              toast.error('Invalid token!');
+              throw e;
+            }
+          }
         }
-      }
-      console.log(formData);
-      const { accessToken } = await AuthService.updateUser(formData!, token!);
-      setToken(accessToken);
-      navigate('/user');
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response && e.response.status === 403) {
-          console.error('Invalid email/password!');
-        }
-      }
-    }
+      },
+      {
+        loading: 'Loading...',
+      },
+    );
   }
 
   return (

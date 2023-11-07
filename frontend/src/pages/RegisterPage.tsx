@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import { useToken } from '../hooks/useToken';
 import { SocialLogin } from '../components/SocialLogin';
 import { AccountForm } from '../components/AccountForm';
+import { toast } from 'sonner';
 
 export function RegisterPage() {
   const { setToken } = useToken();
@@ -26,17 +27,25 @@ export function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    try {
-      const { accessToken } = await AuthService.registerUser(formData);
-      setToken(accessToken);
-      navigate(`/user`);
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response && e.response.status === 409) {
-          console.error('Email already registered');
+    toast.promise(
+      async () => {
+        try {
+          const { accessToken } = await AuthService.registerUser(formData);
+          setToken(accessToken);
+          navigate(`/user`);
+        } catch (e) {
+          if (e instanceof AxiosError) {
+            if (e.response && e.response.status === 409) {
+              toast.error('Email already registered');
+              throw e;
+            }
+          }
         }
-      }
-    }
+      },
+      {
+        loading: 'Loading...',
+      },
+    );
   }
 
   return (

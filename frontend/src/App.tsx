@@ -6,6 +6,7 @@ import { LogInPage } from './pages/LogInPage';
 import { PersonalInfoPage } from './pages/PersonalInfoPage';
 import { DropdownMenu } from './components/DropdownMenu';
 import { PersonalInfoEditPage } from './pages/PersonalInfoEditPage';
+import { Toaster } from 'sonner';
 
 function AccountPageLayout() {
   return (
@@ -27,6 +28,7 @@ function AccountPageLayout() {
           <a href="https://devchallenges.io">devChallenges.io</a>
         </footer>
       </div>
+      <Toaster closeButton richColors />
     </div>
   );
 }
@@ -52,6 +54,7 @@ function PersonalInfoLayout() {
           <a href="https://devchallenges.io">devChallenges.io</a>
         </footer>
       </div>
+      <Toaster closeButton richColors />
     </>
   );
 }

@@ -7,6 +7,7 @@ import { AuthService } from '../services';
 import { useToken } from '../hooks/useToken';
 import { SocialLogin } from '../components/SocialLogin';
 import { AccountForm } from '../components/AccountForm';
+import { toast } from 'sonner';
 
 export function LogInPage() {
   const { setToken } = useToken();
@@ -25,17 +26,26 @@ export function LogInPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    try {
-      const { accessToken } = await AuthService.loginUser(formData);
-      setToken(accessToken);
-      navigate(`/user`);
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response && e.response.status === 403) {
-          console.error('Invalid email/password!');
+    toast.promise(
+      async () => {
+        try {
+          const { accessToken } = await AuthService.loginUser(formData);
+          setToken(accessToken);
+          navigate(`/user`);
+        } catch (e) {
+          if (e instanceof AxiosError) {
+            if (e.response && e.response.status === 403) {
+              toast.error('Invalid email/password!');
+              throw e;
+            }
+          }
         }
-      }
-    }
+      },
+      {
+        loading: 'Loading...',
+        success: 'Redirecting...',
+      },
+    );
   }
 
   return (
