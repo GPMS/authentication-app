@@ -72,6 +72,7 @@ export default function App() {
           <Route index element={<PersonalInfoPage />} />
           <Route path="edit" element={<PersonalInfoEditPage />} />
         </Route>
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );
