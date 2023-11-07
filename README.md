@@ -31,7 +31,6 @@
   - [Built With](#built-with)
 - [Features](#features)
 - [How To Use](#how-to-use)
-- [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
 
 <!-- OVERVIEW -->
@@ -85,14 +84,6 @@ $ cd backend && npm run dev
 # Run the front end
 $ cd frontend && npm run dev
 ```
-
-## Acknowledgements
-
-<!-- This section should list any articles or add-ons/plugins that helps you to complete the project. This is optional but it will help you in the future. For example -->
-
-- [Node.js](https://nodejs.org/)
-- [Tailwind CSS](https://tailwindcss.com)
-- [MongoDB](https://www.mongodb.com/docs/manual/)
 
 ## Contact
 - GitHub [@GPMS](https://github.com/GPMS)
