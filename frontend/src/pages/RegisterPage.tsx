@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MdEmail, MdLock } from 'react-icons/md';
 
-import { FacebookIcon } from '../components/icons/FacebookIcon';
-import { GithubIcon } from '../components/icons/GithubIcon';
-import { GoogleIcon } from '../components/icons/GoogleIcon';
-import { TwitterIcon } from '../components/icons/TwitterIcon';
-import { AccountFormInput } from '../components/AccountFormInput';
 import { UserDTO } from '../types';
 import { AuthService } from '../services';
 import { AxiosError } from 'axios';
 import { useToken } from '../hooks/useToken';
+import { SocialLogin } from '../components/SocialLogin';
+import { AccountForm } from '../components/AccountForm';
 
 export function RegisterPage() {
   const { setToken } = useToken();
@@ -56,33 +52,12 @@ export function RegisterPage() {
           Master web development by making real-life projects. There are multiple paths for you to
           choose
         </p>
-        <form className="grid mt-8 gap-3.5 auto-rows-[3rem]" onSubmit={handleSubmit}>
-          <AccountFormInput
-            Icon={MdEmail}
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={(e) => handleChange(e)}
-          />
-          <AccountFormInput
-            Icon={MdLock}
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={(e) => handleChange(e)}
-          />
+        <AccountForm formData={formData} onChange={handleChange} onSubmit={handleSubmit}>
           <button className="bg-blue-600 mt-2 rounded-lg text-white">Start coding now</button>
-        </form>
+        </AccountForm>
         <div className="flex flex-col gap-5 mt-10 text-center text-[#828282] text-sm">
           <p>or continue with these social profile</p>
-          <div className="flex gap-5 justify-center">
-            <FacebookIcon />
-            <GithubIcon />
-            <GoogleIcon />
-            <TwitterIcon />
-          </div>
+          <SocialLogin />
           <p>
             Already a member?{' '}
             <Link to="/login" className="text-blue-600">
