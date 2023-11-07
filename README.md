@@ -8,7 +8,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://{your-demo-link.your-domain}">
+    <a href="https://authentication-app-frontend-five.vercel.app/">
       Demo
     </a>
     <span> | </span>
@@ -16,7 +16,7 @@
       Solution
     </a>
     <span> | </span>
-    <a href="https://devchallenges.io/challenges/N1fvBjQfhlkctmwj1tnw">
+    <a href="https://legacy.devchallenges.io/challenges/N1fvBjQfhlkctmwj1tnw">
       Challenge
     </a>
   </h3>
@@ -52,7 +52,7 @@
 
 <!-- List the features of your application or follow the template. Don't share the figma file here :) -->
 
-This application/site was created as a submission to a [DevChallenges](https://devchallenges.io/challenges) challenge. The [challenge](https://devchallenges.io/challenges/N1fvBjQfhlkctmwj1tnw) was to build an application to complete the following user stories:
+This application/site was created as a submission to a [DevChallenges](https://devchallenges.io/challenges) challenge. The [challenge](https://legacy.devchallenges.io/challenges/N1fvBjQfhlkctmwj1tnw) was to build an application to complete the following user stories:
 - [x] I can register a new account
 - [x] I can log in
 - [ ] I can log in or register with at least one of the following services: Google, Facebook, Twitter or Github
