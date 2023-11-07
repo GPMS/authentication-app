@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import { DevChallengesIcon } from './components/icons/DevChallengesIcons';
 import { RegisterPage } from './pages/RegisterPage';
@@ -9,6 +10,12 @@ import { PersonalInfoEditPage } from './pages/PersonalInfoEditPage';
 import { Toaster } from 'sonner';
 
 function AccountPageLayout() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem('auth-token')) {
+      navigate('/user');
+    }
+  }, [navigate]);
   return (
     <div className="min-h-screen grid sm:justify-center sm:items-center">
       <div className="p-4 container flex flex-col sm:w-[473px] tracking-tight">
