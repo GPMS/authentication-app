@@ -11,10 +11,9 @@ export async function getUserInfo(req, res) {
   res.send({ ...user, password: undefined });
 }
 export async function updateUserInfo(req, res) {
-  for (const key in req.body) {
-    if (key === "password") {
-      req.body.password = hashPassword(req.body.password);
-    }
+  console.log("Update");
+  if (req.body?.password) {
+    req.body.password = await hashPassword(req.body.password);
   }
   const updatedUser = await updateUser(req.userId, req.body);
   if (!updatedUser) {
