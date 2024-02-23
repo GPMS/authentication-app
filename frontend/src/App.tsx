@@ -13,7 +13,7 @@ function AccountPageLayout() {
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem('auth-token')) {
-      navigate('/user');
+      navigate('/user', { replace: true });
     }
   }, [navigate]);
   return (
@@ -71,7 +71,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<AccountPageLayout />}>
-            <Route index element={<Navigate to="/login" />} />
+            <Route index element={<Navigate to="/login" replace />} />
             <Route path="/register" index element={<RegisterPage />} />
             <Route path="/login" element={<LogInPage />} />
           </Route>
@@ -79,7 +79,7 @@ export default function App() {
             <Route index element={<PersonalInfoPage />} />
             <Route path="edit" element={<PersonalInfoEditPage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
       <Toaster closeButton richColors />

@@ -45,7 +45,6 @@ export function DropdownMenu() {
   } transition-[opacity] origin-top delay-150 duration-200 ease-in`;
 
   async function handleLogOut() {
-    removeToken();
     toast.promise(
       async () => {
         try {
@@ -66,7 +65,6 @@ export function DropdownMenu() {
         success: 'Redirecting...',
       },
     );
-    navigate('/');
   }
 
   if (isLoading) {

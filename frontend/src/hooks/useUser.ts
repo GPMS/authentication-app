@@ -20,7 +20,7 @@ export function useUser() {
         if (e instanceof AxiosError) {
           if (e.response?.status === 401) {
             toast.error('You must login first before accessing this page');
-            navigate('/login');
+            navigate('/login', { replace: true });
           }
         }
       }
