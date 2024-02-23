@@ -1,30 +1,32 @@
 import { useEffect, useState } from 'react';
 import { User } from '../types';
-import { useLocalStorage } from 'usehooks-ts';
 import { UserService } from '../services';
-import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [accessToken] = useLocalStorage('auth-token', '');
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getUser() {
       try {
-        if (!accessToken) return;
-        const userInfo = await UserService.getUserInfo(accessToken);
+        const userInfo = await UserService.getUserInfo();
         setUser(userInfo);
         setIsLoading(false);
       } catch (e) {
         if (e instanceof AxiosError) {
-          toast.error(e.message);
+          if (e.response?.status === 401) {
+            toast.error('You must login first before accessing this page');
+            navigate('/login');
+          }
         }
       }
     }
     getUser();
-  }, [accessToken]);
+  }, [navigate]);
 
   return { user, isLoading };
 }

@@ -5,6 +5,9 @@ import { IconType } from 'react-icons';
 
 import { useToken } from '../hooks/useToken';
 import { useUser } from '../hooks/useUser';
+import { AuthService } from '../services';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 type DropdownItemProp = {
   Icon: IconType;
@@ -43,6 +46,26 @@ export function DropdownMenu() {
 
   async function handleLogOut() {
     removeToken();
+    toast.promise(
+      async () => {
+        try {
+          await AuthService.logoutUser();
+          removeToken();
+          navigate(`/`);
+        } catch (e) {
+          if (e instanceof AxiosError) {
+            if (e.response && e.response.status === 403) {
+              toast.error('Invalid email/password!');
+              throw e;
+            }
+          }
+        }
+      },
+      {
+        loading: 'Loading...',
+        success: 'Redirecting...',
+      },
+    );
     navigate('/');
   }
 

@@ -7,6 +7,7 @@ const api = axios.create({
     ? 'http://localhost:5000'
     : 'https://authentication-app-backend-lovat.vercel.app/',
   timeout: 1000,
+  withCredentials: true,
 });
 
 export const AuthService = {
@@ -24,25 +25,20 @@ export const AuthService = {
     });
     return data;
   },
+  logoutUser: () => {
+    return api.post('auth/logout');
+  },
 };
 
 export const UserService = {
-  getUserInfo: async (token: string) => {
-    const { data } = await api.get<User>('/user', {
-      headers: { authorization: `Bearer ${token}` },
-    });
+  getUserInfo: async () => {
+    const { data } = await api.get<User>('/user');
     return data;
   },
-  updateUser: async (user: Partial<User>, accessToken: string) => {
-    const { data } = await api.put<AuthResponse>(
-      '/user',
-      {
-        ...user,
-      },
-      {
-        headers: { authorization: `Bearer ${accessToken}` },
-      },
-    );
+  updateUser: async (updatedUser: Partial<User>) => {
+    const { data } = await api.put<AuthResponse>('/user', {
+      ...updatedUser,
+    });
     return data;
   },
 };

@@ -13,7 +13,7 @@ export function PersonalInfoEditPage() {
   const navigate = useNavigate();
   const { user, isLoading } = useUser();
   const [formData, setFormData] = useState<Partial<User> | null>(null);
-  const { token, setToken } = useToken();
+  const { setToken } = useToken();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -45,13 +45,14 @@ export function PersonalInfoEditPage() {
     toast.promise(
       async () => {
         try {
+          // Remove unchanged fields
           let key: keyof User;
           for (key in formData) {
             if (formData![key] === user![key]) {
               delete formData![key];
             }
           }
-          const { accessToken } = await UserService.updateUser(formData!, token!);
+          const { accessToken } = await UserService.updateUser(formData!);
           setToken(accessToken);
           navigate('/user');
         } catch (e) {

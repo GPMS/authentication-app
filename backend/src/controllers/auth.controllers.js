@@ -1,6 +1,8 @@
 import { hashPassword, verifyPassword, generateToken } from "../util.js";
 import { createUser, findUserByEmail } from "../db.js";
 
+export const COOKIE_NAME = "token";
+
 /**
  * @param {import('express').Request} req
  * @param {import('express').Response} res
@@ -22,8 +24,10 @@ export async function register(req, res) {
     email,
     password: hashedPassword,
   });
+  const token = generateToken({ ...createdUser, password: undefined });
+  res.cookie(COOKIE_NAME, token, { httpOnly: true });
   res.status(201).send({
-    accessToken: generateToken({ ...createdUser, password: undefined }),
+    accessToken: token,
   });
 }
 
@@ -45,8 +49,10 @@ export async function login(req, res) {
       res.sendStatus(403);
       return;
     }
+    const token = generateToken({ ...user, password: undefined });
+    res.cookie(COOKIE_NAME, token, { httpOnly: true });
     res.send({
-      accessToken: generateToken({ ...user, password: undefined }),
+      accessToken: token,
     });
   } catch (e) {
     if (e instanceof Error) {
@@ -57,4 +63,13 @@ export async function login(req, res) {
       res.status(403);
     }
   }
+}
+
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+export function logout(req, res) {
+  res.clearCookie(COOKIE_NAME);
+  res.send();
 }

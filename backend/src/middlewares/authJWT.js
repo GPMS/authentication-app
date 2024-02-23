@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { verifyJwt } from "../util.js";
+import { COOKIE_NAME } from "../controllers/auth.controllers.js";
 
 /**
  * @param {import('express').Request} req
@@ -8,8 +9,7 @@ import { verifyJwt } from "../util.js";
  */
 export async function verifyToken(req, res, next) {
   // Get JWT access token from request
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies[COOKIE_NAME];
   if (!token) return res.sendStatus(401);
 
   // Validate token
