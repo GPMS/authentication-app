@@ -1,8 +1,11 @@
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { PersonalInfoEditForm } from '../components/icons/PersonalInfoEditForm';
+import { useUser } from '../hooks/useUser';
 
 export function PersonalInfoEditPage() {
+  const { user, isLoading } = useUser();
+
   return (
     <>
       <Link to="/user" className="flex items-center gap-2 text-[#2D9CDB] mt-2 mb-6">
@@ -13,7 +16,8 @@ export function PersonalInfoEditPage() {
           <h1 className="text-2xl text-black dark:text-white">Change Info</h1>
           <p className="text-xs text-[#828282]">Changes will be reflected to every service</p>
         </div>
-        <PersonalInfoEditForm />
+        {isLoading && <>Loading</>}
+        {user && <PersonalInfoEditForm user={user} />}
       </div>
     </>
   );

@@ -1,25 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdCameraAlt } from 'react-icons/md';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import { useToken } from '../../hooks/useToken';
-import { useUser } from '../../hooks/useUser';
 import { User } from '../../types';
 import { UserService } from '../../services';
 
-export function PersonalInfoEditForm() {
+export function PersonalInfoEditForm({ user }: { user: User }) {
   const navigate = useNavigate();
-  const { user, isLoading } = useUser();
   const [formData, setFormData] = useState<Partial<User> | null>(null);
   const { setToken } = useToken();
-
-  useEffect(() => {
-    if (!isLoading) {
-      setFormData(user);
-    }
-  }, [user, isLoading]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFormData((old) => ({

@@ -1,6 +1,3 @@
-import { ReactNode, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
 import { useUser } from '../hooks/useUser';
 import { PersonalInfo } from '../components/icons/PersonalInfo';
 
