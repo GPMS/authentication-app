@@ -61,26 +61,28 @@ function PersonalInfoLayout() {
           <a href="https://devchallenges.io">devChallenges.io</a>
         </footer>
       </div>
-      <Toaster closeButton richColors />
     </>
   );
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AccountPageLayout />}>
-          <Route index element={<Navigate to="/login" />} />
-          <Route path="/register" index element={<RegisterPage />} />
-          <Route path="/login" element={<LogInPage />} />
-        </Route>
-        <Route path="/user" element={<PersonalInfoLayout />}>
-          <Route index element={<PersonalInfoPage />} />
-          <Route path="edit" element={<PersonalInfoEditPage />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AccountPageLayout />}>
+            <Route index element={<Navigate to="/login" />} />
+            <Route path="/register" index element={<RegisterPage />} />
+            <Route path="/login" element={<LogInPage />} />
+          </Route>
+          <Route path="/user" element={<PersonalInfoLayout />}>
+            <Route index element={<PersonalInfoPage />} />
+            <Route path="edit" element={<PersonalInfoEditPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster closeButton richColors />
+    </>
   );
 }
