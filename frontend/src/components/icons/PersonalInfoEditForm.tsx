@@ -10,7 +10,7 @@ import { UserService } from '../../services';
 
 export function PersonalInfoEditForm({ user }: { user: User }) {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<Partial<User> | null>(null);
+  const [formData, setFormData] = useState<Partial<User> | null>(user);
   const { setToken } = useToken();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -49,10 +49,6 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
         loading: 'Loading...',
       },
     );
-  }
-
-  if (!formData) {
-    return <>Loading</>;
   }
 
   return (
