@@ -1,6 +1,10 @@
 import { findUserById, updateUser } from "../db.js";
 import { generateToken, hashPassword } from "../util.js";
 
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export async function getUserInfo(req, res) {
   let user = await findUserById(req.userId);
   if (!user) {
@@ -10,6 +14,11 @@ export async function getUserInfo(req, res) {
   }
   res.send({ ...user, password: undefined });
 }
+
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export async function updateUserInfo(req, res) {
   console.log("Update");
   if (req.body?.password) {

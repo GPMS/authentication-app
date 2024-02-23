@@ -1,6 +1,10 @@
 import { hashPassword, verifyPassword, generateToken } from "../util.js";
 import { createUser, findUserByEmail } from "../db.js";
 
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export async function register(req, res) {
   console.info("Register");
   const { email, password } = req.body;
@@ -23,6 +27,10 @@ export async function register(req, res) {
   });
 }
 
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export async function login(req, res) {
   console.info("Login");
   try {

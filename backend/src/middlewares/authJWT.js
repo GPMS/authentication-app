@@ -1,6 +1,11 @@
 import jwt from "jsonwebtoken";
 import { verifyJwt } from "../util.js";
 
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
 export async function verifyToken(req, res, next) {
   // Get JWT access token from request
   const authHeader = req.headers["authorization"];
