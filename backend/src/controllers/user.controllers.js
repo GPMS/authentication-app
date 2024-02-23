@@ -31,6 +31,6 @@ export async function updateUserInfo(req, res) {
     return;
   }
   res.send({
-    accessToken: generateToken({ ...updatedUser, password: undefined }),
+    accessToken: generateToken({ id: updateUser.id }),
   });
 }

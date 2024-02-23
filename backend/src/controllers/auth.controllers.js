@@ -24,7 +24,7 @@ export async function register(req, res) {
     email,
     password: hashedPassword,
   });
-  const token = generateToken({ ...createdUser, password: undefined });
+  const token = generateToken({ id: createdUser.id });
   res.cookie(COOKIE_NAME, token, { httpOnly: true });
   res.status(201).send({
     accessToken: token,
@@ -49,7 +49,7 @@ export async function login(req, res) {
       res.sendStatus(403);
       return;
     }
-    const token = generateToken({ ...user, password: undefined });
+    const token = generateToken({ id: user.id });
     res.cookie(COOKIE_NAME, token, { httpOnly: true });
     res.send({
       accessToken: token,

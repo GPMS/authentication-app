@@ -14,8 +14,8 @@ export async function verifyToken(req, res, next) {
 
   // Validate token
   try {
-    const user = await verifyJwt(token, process.env.ACCESS_TOKEN_SECRET);
-    req.userId = user.id;
+    const { id } = await verifyJwt(token, process.env.ACCESS_TOKEN_SECRET);
+    req.userId = id;
     next();
   } catch (err) {
     if (err) {
