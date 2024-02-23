@@ -1,0 +1,33 @@
+@BASE_URL = http://localhost:5000
+
+### Create account
+POST {{BASE_URL}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "aaa@aaa",
+    "password": "bbb"
+}
+
+### Login to existing account
+POST {{BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "aaa@aaa",
+    "password": "bbb"
+}
+
+### Logout
+POST {{BASE_URL}}/auth/logout
+
+### Get current logged in user info
+GET {{BASE_URL}}/user
+
+### Update current logged in user info
+PUT {{BASE_URL}}/user
+Content-Type: application/json
+
+{
+    "name": "A"
+}
