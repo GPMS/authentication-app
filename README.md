@@ -72,17 +72,10 @@ To clone and run this application, you'll need [Git](https://git-scm.com), [Node
 $ git clone https://github.com/your-user-name/your-project-name
 
 # Install dependencies
-$ cd backend && npm install
-$ cd frontend && npm install
+$ ./installDeps.sh
 
-# Run MongoDB
-$ cd backend && npm run db
-
-# Run the server
-$ cd backend && npm run dev
-
-# Run the front end
-$ cd frontend && npm run dev
+# Run MongoDB, Server and Front-End App
+$ ./runDev.sh
 ```
 
 ## Contact
