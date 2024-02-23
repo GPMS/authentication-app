@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { User } from '../types';
 import { useLocalStorage } from 'usehooks-ts';
-import { AuthService } from '../services';
+import { UserService } from '../services';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 
@@ -14,7 +14,7 @@ export function useUser() {
     async function getUser() {
       try {
         if (!accessToken) return;
-        const userInfo = await AuthService.getUserInfo(accessToken);
+        const userInfo = await UserService.getUserInfo(accessToken);
         setUser(userInfo);
         setIsLoading(false);
       } catch (e) {

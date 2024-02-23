@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
 import { useUser } from '../hooks/useUser';
-import { AuthService } from '../services';
+import { UserService } from '../services';
 import { User } from '../types';
 import { useToken } from '../hooks/useToken';
 import { toast } from 'sonner';
@@ -51,7 +51,7 @@ export function PersonalInfoEditPage() {
               delete formData![key];
             }
           }
-          const { accessToken } = await AuthService.updateUser(formData!, token!);
+          const { accessToken } = await UserService.updateUser(formData!, token!);
           setToken(accessToken);
           navigate('/user');
         } catch (e) {

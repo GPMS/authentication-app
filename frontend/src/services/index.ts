@@ -24,6 +24,9 @@ export const AuthService = {
     });
     return data;
   },
+};
+
+export const UserService = {
   getUserInfo: async (token: string) => {
     const { data } = await api.get<User>('/user', {
       headers: { authorization: `Bearer ${token}` },
