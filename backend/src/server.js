@@ -15,7 +15,15 @@ let shuttingDown = false;
 
 dotenv.config();
 
-app.use(cors({ credentials: true }));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:5173"
+        : "https://authentication-app-frontend-five.vercel.app",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
