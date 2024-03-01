@@ -35,7 +35,6 @@ function AccountPageLayout() {
           <a href="https://devchallenges.io">devChallenges.io</a>
         </footer>
       </div>
-      <Toaster closeButton richColors />
     </div>
   );
 }
@@ -81,8 +80,8 @@ export default function App() {
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+        <Toaster closeButton richColors />
       </BrowserRouter>
-      <Toaster closeButton richColors />
     </>
   );
 }
