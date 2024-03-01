@@ -37,8 +37,8 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
           navigate('/user');
         } catch (e) {
           if (e instanceof AxiosError) {
-            if (e.response && e.response.status === 403) {
-              toast.error('Invalid token!');
+            if (e.response && e.response.data.message) {
+              toast.error(e.response.data.message);
               throw e;
             }
           }
