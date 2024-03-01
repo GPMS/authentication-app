@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { MdEmail, MdLock } from 'react-icons/md';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
-import { AccountForm } from './AccountForm';
 import { AuthService } from '../services';
 import { SocialLogin } from './SocialLogin';
 import { UserDTO } from '../types';
@@ -52,11 +52,43 @@ function AuthForm({ isRegister }: { isRegister: boolean }) {
   }
   return (
     <>
-      <AccountForm formData={formData} onChange={handleChange} onSubmit={handleSubmit}>
+      <form className="grid mt-8 gap-3.5 auto-rows-[3rem]" onSubmit={handleSubmit}>
+        <div className="relative text-[#828282]">
+          <MdEmail
+            className="text-inherit absolute w-[24px] h-[24px] left-[12px] -translate-y-1/2 top-1/2"
+            name={'email-icon'}
+          />
+          <input
+            className="placeholder:text-inherit border border-[#BDBDBD] rounded-lg w-full h-full pl-12 bg-transparent"
+            type="email"
+            name="email"
+            placeholder="Email"
+            id=""
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="relative text-[#828282]">
+          <MdLock
+            className="text-inherit absolute w-[24px] h-[24px] left-[12px] -translate-y-1/2 top-1/2"
+            name={'password-icon'}
+          />
+          <input
+            className="placeholder:text-inherit border border-[#BDBDBD] rounded-lg w-full h-full pl-12 bg-transparent"
+            type="password"
+            name="password"
+            placeholder="Password"
+            id=""
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <button className="bg-blue-600 mt-2 rounded-lg text-white">
           {isRegister ? 'Start coding now' : 'Login'}
         </button>
-      </AccountForm>
+      </form>
       <div className="flex flex-col gap-5 mt-10 text-center text-[#828282] text-sm">
         <p>or continue with these social profile</p>
         <SocialLogin />
