@@ -4,9 +4,9 @@ import { MdCameraAlt } from 'react-icons/md';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
-import { useToken } from '../../hooks/useToken';
-import { User } from '../../types';
-import { UserService } from '../../services';
+import { useToken } from '../hooks/useToken';
+import { User } from '../types';
+import { UserService } from '../services';
 
 export function PersonalInfoEditForm({ user }: { user: User }) {
   const navigate = useNavigate();

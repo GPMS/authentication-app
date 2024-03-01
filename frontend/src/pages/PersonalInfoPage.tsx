@@ -1,5 +1,5 @@
 import { useUser } from '../hooks/useUser';
-import { PersonalInfo } from '../components/icons/PersonalInfo';
+import { PersonalInfo } from '../components/PersonalInfo';
 
 export function PersonalInfoPage() {
   const { user, isLoading } = useUser();

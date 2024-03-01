@@ -1,6 +1,6 @@
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import { PersonalInfoEditForm } from '../components/icons/PersonalInfoEditForm';
+import { PersonalInfoEditForm } from '../components/PersonalInfoEditForm';
 import { useUser } from '../hooks/useUser';
 
 export function PersonalInfoEditPage() {
