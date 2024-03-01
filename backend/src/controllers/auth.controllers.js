@@ -1,5 +1,6 @@
 import { hashPassword, verifyPassword, generateToken } from "../util.js";
 import { createUser, findUserByEmail } from "../db.js";
+import { BadRequest, Conflict, Forbidden } from "../errors.js";
 
 export const COOKIE_NAME = "token";
 
@@ -11,13 +12,10 @@ export async function register(req, res) {
   console.info("Register");
   const { email, password } = req.body;
   if (!password || !email) {
-    res.sendStatus(400);
-    return;
+    throw new BadRequest("No email or password provided");
   }
   if (await findUserByEmail(email)) {
-    console.warn(`User with email ${email} already exists`);
-    res.sendStatus(409);
-    return;
+    throw new Conflict(`User with email ${email} already exists`);
   }
   const hashedPassword = await hashPassword(password);
   const createdUser = await createUser({
@@ -37,32 +35,19 @@ export async function register(req, res) {
  */
 export async function login(req, res) {
   console.info("Login");
-  try {
-    const { email, password } = req.body;
-    if (!password || !email) {
-      res.sendStatus(400);
-      return;
-    }
-    const user = await findUserByEmail(email);
-    if (!user || !(await verifyPassword(password, user.password))) {
-      console.warn("Invalid email or password");
-      res.sendStatus(403);
-      return;
-    }
-    const token = generateToken({ id: user.id });
-    res.cookie(COOKIE_NAME, token, { httpOnly: true });
-    res.send({
-      accessToken: token,
-    });
-  } catch (e) {
-    if (e instanceof Error) {
-      res.status(403).send({
-        message: e.message,
-      });
-    } else {
-      res.status(403);
-    }
+  const { email, password } = req.body;
+  if (!password || !email) {
+    throw new BadRequest("No email or password provided");
   }
+  const user = await findUserByEmail(email);
+  if (!user || !(await verifyPassword(password, user.password))) {
+    throw new Forbidden("Invalid email or password");
+  }
+  const token = generateToken({ id: user.id });
+  res.cookie(COOKIE_NAME, token, { httpOnly: true });
+  res.send({
+    accessToken: token,
+  });
 }
 
 /**

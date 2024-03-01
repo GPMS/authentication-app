@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { verifyJwt } from "../util.js";
 import { COOKIE_NAME } from "../controllers/auth.controllers.js";
+import { BadRequest, Forbidden } from "../errors.js";
 
 /**
  * @param {import('express').Request} req
@@ -10,7 +11,7 @@ import { COOKIE_NAME } from "../controllers/auth.controllers.js";
 export async function verifyToken(req, res, next) {
   // Get JWT access token from request
   const token = req.cookies[COOKIE_NAME];
-  if (!token) return res.sendStatus(401);
+  if (!token) throw BadRequest("No token provided");
 
   // Validate token
   try {
@@ -24,8 +25,7 @@ export async function verifyToken(req, res, next) {
       } else {
         console.warn("Token validation error:", err);
       }
-      console.warn("invalid token");
-      return res.sendStatus(403);
+      throw Forbidden("Invalid token");
     }
   }
 }

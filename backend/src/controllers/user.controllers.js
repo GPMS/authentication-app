@@ -1,4 +1,5 @@
 import { findUserById, updateUser } from "../db.js";
+import { BadRequest } from "../errors.js";
 import { generateToken, hashPassword } from "../util.js";
 
 /**
@@ -8,9 +9,7 @@ import { generateToken, hashPassword } from "../util.js";
 export async function getUserInfo(req, res) {
   let user = await findUserById(req.userId);
   if (!user) {
-    console.warn("no user with id", req.userId);
-    res.sendStatus(403);
-    return;
+    throw new BadRequest(`no user with id ${req.userId}`);
   }
   res.send({ ...user, password: undefined });
 }
@@ -26,9 +25,7 @@ export async function updateUserInfo(req, res) {
   }
   const updatedUser = await updateUser(req.userId, req.body);
   if (!updatedUser) {
-    console.warn("no user with id", req.userId);
-    res.sendStatus(403);
-    return;
+    throw new BadRequest(`no user with id ${req.userId}`);
   }
   res.send({
     accessToken: generateToken({ id: updateUser.id }),

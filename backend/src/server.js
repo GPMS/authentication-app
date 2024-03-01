@@ -2,10 +2,12 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import "express-async-errors";
 
 import { authRoutes } from "./routes/auth.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { connectDB, disconnectDB } from "./db.js";
+import { handleErrors } from "./middlewares/handleErrors.js";
 
 console.info("INFO: Starting Express.js application");
 
@@ -40,6 +42,8 @@ app.get("/", (req, res) => {
 
 authRoutes(app);
 userRoutes(app);
+
+app.use(handleErrors);
 
 await connectDB();
 const server = app.listen(PORT, () => {
