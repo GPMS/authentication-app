@@ -1,33 +1,30 @@
 import { findUserById, updateUser } from "../db.js";
-import { BadRequest } from "../errors.js";
 import { generateToken, hashPassword } from "../util.js";
 
 /**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {string} userId
+ * @return User info or null if user doesn't exist
  */
-export async function getUserInfo(req, res) {
-  let user = await findUserById(req.userId);
+export async function getUserInfo(userId) {
+  let user = await findUserById(userId);
   if (!user) {
-    throw new BadRequest(`no user with id ${req.userId}`);
+    return null;
   }
-  res.send({ ...user, password: undefined });
+  return { ...user, password: undefined };
 }
 
 /**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {string} userId
+ * @param newUserInfo
+ * @return token or null if user doesn't exist
  */
-export async function updateUserInfo(req, res) {
-  console.log("Update");
-  if (req.body?.password) {
-    req.body.password = await hashPassword(req.body.password);
+export async function updateUserInfo(userId, newUserInfo) {
+  if (newUserInfo?.password) {
+    newUserInfo.password = await hashPassword(newUserInfo.password);
   }
-  const updatedUser = await updateUser(req.userId, req.body);
+  const updatedUser = await updateUser(userId, newUserInfo);
   if (!updatedUser) {
-    throw new BadRequest(`no user with id ${req.userId}`);
+    return null;
   }
-  res.send({
-    accessToken: generateToken({ id: updateUser.id }),
-  });
+  return generateToken({ id: updateUser.id });
 }
