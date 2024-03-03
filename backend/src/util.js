@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { config } from "./config.js";
 
 /**
  *
@@ -7,17 +8,15 @@ import jwt from "jsonwebtoken";
  * @returns {string}
  */
 export function generateToken(payload) {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+  return jwt.sign(payload, config.jwtAccessTokenSecret);
 }
 
 /**
- *
  * @param {string} token
- * @param {jwt.Secret | jwt.GetPublicKeyOrSecret} secretOrPublicKey
  */
-export function verifyJwt(token, secretOrPublicKey) {
+export function verifyJwt(token) {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, secretOrPublicKey, (err, user) => {
+    jwt.verify(token, config.jwtAccessTokenSecret, (err, user) => {
       if (err) {
         reject(err);
         return;

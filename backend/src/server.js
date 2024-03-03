@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import "express-async-errors";
 
+import { config, loadConfig } from "./config.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { connectDB, disconnectDB } from "./db.js";
@@ -35,17 +35,15 @@ function cleanup() {
 async function start() {
   console.info("INFO: Starting Express.js application");
 
-  const app = express();
-  const PORT = 5000;
+  loadConfig();
 
-  dotenv.config();
+  const app = express();
 
   app.use(
     cors({
-      origin:
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:5173"
-          : "https://authentication-app-frontend-five.vercel.app",
+      origin: config.isDev
+        ? "http://localhost:5173"
+        : "https://authentication-app-frontend-five.vercel.app",
       credentials: true,
     })
   );
@@ -69,8 +67,8 @@ async function start() {
   app.use(handleErrors);
 
   await connectDB();
-  server = app.listen(PORT, () => {
-    console.info(`INFO: Listening on port ${PORT}...`);
+  server = app.listen(config.port, () => {
+    console.info(`INFO: Listening on port ${config.port}...`);
   });
 
   process.on("SIGINT", cleanup);

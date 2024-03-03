@@ -1,4 +1,5 @@
 import { MongoClient, Db, ObjectId } from "mongodb";
+import { config } from "./config.js";
 
 /**
  * @type MongoClient | null
@@ -16,9 +17,8 @@ const COLLECTIONS = {
 
 export async function connectDB() {
   try {
-    const databaseURL = process.env.DB_URL ?? "mongodb://127.0.0.1:27017";
-    console.info("INFO: DB: Trying to connect to", databaseURL);
-    client = new MongoClient(databaseURL);
+    console.info("INFO: DB: Trying to connect to", config.databaseURL);
+    client = new MongoClient(config.databaseURL);
     await client.connect();
     db = client.db("authentication-app");
     console.info("INFO: DB: Successfully connected.");
