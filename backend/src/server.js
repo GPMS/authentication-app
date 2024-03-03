@@ -9,46 +9,12 @@ import { userRoutes } from "./routes/user.routes.js";
 import { connectDB, disconnectDB } from "./db.js";
 import { handleErrors } from "./middlewares/handleErrors.js";
 
-console.info("INFO: Starting Express.js application");
+/**
+ * @type {import('http').Server | null}
+ */
+let server = null;
 
-const app = express();
-const PORT = 5000;
 let shuttingDown = false;
-
-dotenv.config();
-
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:5173"
-        : "https://authentication-app-frontend-five.vercel.app",
-    credentials: true,
-  })
-);
-app.use(express.json());
-app.use(cookieParser());
-
-app.use((_, resp, next) => {
-  if (!shuttingDown) return next();
-
-  resp.setHeader("Connection", "close");
-  resp.send(503, "Server is in the process of shutting down");
-});
-
-app.get("/", (req, res) => {
-  res.send({ message: "Welcome to my app" });
-});
-
-authRoutes(app);
-userRoutes(app);
-
-app.use(handleErrors);
-
-await connectDB();
-const server = app.listen(PORT, () => {
-  console.info(`INFO: Listening on port ${PORT}...`);
-});
 
 function cleanup() {
   if (!server) return;
@@ -66,5 +32,49 @@ function cleanup() {
   }, 30 * 1000);
 }
 
-process.on("SIGINT", cleanup);
-process.on("SIGTERM", cleanup);
+async function start() {
+  console.info("INFO: Starting Express.js application");
+
+  const app = express();
+  const PORT = 5000;
+
+  dotenv.config();
+
+  app.use(
+    cors({
+      origin:
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:5173"
+          : "https://authentication-app-frontend-five.vercel.app",
+      credentials: true,
+    })
+  );
+  app.use(express.json());
+  app.use(cookieParser());
+
+  app.use((_, resp, next) => {
+    if (!shuttingDown) return next();
+
+    resp.setHeader("Connection", "close");
+    resp.send(503, "Server is in the process of shutting down");
+  });
+
+  app.get("/", (req, res) => {
+    res.send({ message: "Welcome to my app" });
+  });
+
+  authRoutes(app);
+  userRoutes(app);
+
+  app.use(handleErrors);
+
+  await connectDB();
+  server = app.listen(PORT, () => {
+    console.info(`INFO: Listening on port ${PORT}...`);
+  });
+
+  process.on("SIGINT", cleanup);
+  process.on("SIGTERM", cleanup);
+}
+
+start();
