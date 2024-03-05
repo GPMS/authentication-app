@@ -1,16 +1,13 @@
-import { findUserById, updateUser } from "../db.js";
 import { generateToken, hashPassword } from "../util.js";
+import { User } from "../models/user.js";
 
 /**
  * @param {string} userId
  * @return User info or null if user doesn't exist
  */
 export async function getUserInfo(userId) {
-  let user = await findUserById(userId);
-  if (!user) {
-    return null;
-  }
-  return { ...user, password: undefined };
+  let user = await User.findById(userId).exec();
+  return user;
 }
 
 /**
@@ -22,9 +19,15 @@ export async function updateUserInfo(userId, newUserInfo) {
   if (newUserInfo?.password) {
     newUserInfo.password = await hashPassword(newUserInfo.password);
   }
-  const updatedUser = await updateUser(userId, newUserInfo);
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: newUserInfo,
+    },
+    { returnDocument: "after" }
+  ).exec();
   if (!updatedUser) {
     return null;
   }
-  return generateToken({ id: updateUser.id });
+  return generateToken({ id: updatedUser.id });
 }
