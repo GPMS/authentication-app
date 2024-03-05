@@ -19,7 +19,10 @@ export function loadConfig() {
   config = {
     isDev: process.env.NODE_ENV === "development",
     port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
-    databaseURL: process.env.DB_URL ?? "mongodb://127.0.0.1:27017",
+    databaseURL:
+      process.env.NODE_ENV === "development"
+        ? "mongodb://127.0.0.1:27017"
+        : process.env.DB_URL,
     jwtAccessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   };
 
