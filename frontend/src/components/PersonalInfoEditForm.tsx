@@ -16,7 +16,9 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
     handleSubmit,
     register,
     formState: { errors, isValid, isDirty },
-  } = useForm<Partial<User>>();
+  } = useForm<Partial<User>>({
+    defaultValues: user,
+  });
 
   const onSubmit: SubmitHandler<Partial<User>> = async (formData) => {
     toast.promise(
@@ -25,7 +27,13 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
           // Remove unchanged fields
           let key: keyof User;
           for (key in formData) {
-            if (formData![key] === user![key]) {
+            // Dont overwrite required fields with nothing
+            if (
+              (key === 'password' && !formData.password) ||
+              (key === 'email' && !formData.email)
+            ) {
+              delete formData[key];
+            } else if (user[key] && formData![key] === user[key]) {
               delete formData![key];
             }
           }
