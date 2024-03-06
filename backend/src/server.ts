@@ -3,16 +3,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "express-async-errors";
 
-import { config, loadConfig } from "./config.js";
-import { authRoutes } from "./routes/auth.routes.js";
-import { userRoutes } from "./routes/user.routes.js";
-import { connectDB, disconnectDB } from "./db.js";
-import { handleErrors } from "./middlewares/handleErrors.js";
+import { config, loadConfig } from "./config";
+import { authRoutes } from "./routes/auth.routes";
+import { userRoutes } from "./routes/user.routes";
+import { connectDB, disconnectDB } from "./db";
+import { handleErrors } from "./middlewares/handleErrors";
+import { Server } from "http";
 
-/**
- * @type {import('http').Server | null}
- */
-let server = null;
+let server: Server | null = null;
 
 let shuttingDown = false;
 
@@ -50,11 +48,11 @@ async function start() {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.use((_, resp, next) => {
+  app.use((_, res, next) => {
     if (!shuttingDown) return next();
 
-    resp.setHeader("Connection", "close");
-    resp.send(503, "Server is in the process of shutting down");
+    res.setHeader("Connection", "close");
+    res.status(503).send("Server is in the process of shutting down");
   });
 
   app.get("/", (req, res) => {

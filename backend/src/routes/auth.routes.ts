@@ -1,10 +1,6 @@
-import {
-  login,
-  register,
-  COOKIE_NAME,
-} from "../controllers/auth.controllers.js";
-import { verifyToken } from "../middlewares/authJWT.js";
-import { BadRequest, Forbidden, Conflict } from "../errors.js";
+import { login, register, COOKIE_NAME } from "../controllers/auth.controllers";
+import { verifyToken } from "../middlewares/authJWT";
+import { BadRequest, Forbidden, Conflict } from "../errors";
 
 /**
  * @param {import('express').Express} app

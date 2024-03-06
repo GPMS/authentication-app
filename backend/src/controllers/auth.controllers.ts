@@ -1,15 +1,9 @@
-import { hashPassword, verifyPassword, generateToken } from "../util.js";
-import { User } from "../models/user.js";
+import { hashPassword, verifyPassword, generateToken } from "../util";
+import { User } from "../models/user";
 
 export const COOKIE_NAME = "token";
 
-/**
- *
- * @param {string} email
- * @param {string} password
- * @returns {Promise<string | null>} token or null if user creation failed
- */
-export async function register(email, password) {
+export async function register(email: string, password: string) {
   if (await User.findOne({ email }).exec()) {
     return null;
   }
@@ -21,13 +15,7 @@ export async function register(email, password) {
   return generateToken({ id: createdUser.id });
 }
 
-/**
- *
- * @param {string} email
- * @param {string} password
- * @returns {Promise<string | null>} token or null if authentication failed
- */
-export async function login(email, password) {
+export async function login(email: string, password: string) {
   const user = await User.findOne({ email }).select("+password").exec();
   if (!user || !(await verifyPassword(password, user.password))) {
     return null;

@@ -1,4 +1,4 @@
-import { CustomError } from "../errors.js";
+import { CustomError } from "../errors";
 
 /**
  *

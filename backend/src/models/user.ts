@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+export type TUser = {
+  email: string;
+  photo: string;
+  name: string;
+  bio: string;
+  phone: string;
+  password: string;
+};
+
+const userSchema = new mongoose.Schema<TUser>({
   email: {
     type: String,
     required: true,
@@ -17,4 +26,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model<TUser>("User", userSchema);

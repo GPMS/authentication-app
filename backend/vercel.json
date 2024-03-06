@@ -1,6 +1,17 @@
 {
   "version": 2,
   "name": "authentication-app-backend",
-  "builds": [{ "src": "/src/server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/src/server.js" }]
+  "builds": [
+    {
+      "src": "dist/server.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["dist/**"] }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js"
+    }
+  ]
 }

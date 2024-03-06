@@ -1,17 +1,13 @@
 import dotenv from "dotenv";
 
-/**
- * @typedef {Object} Config
- * @property {boolean | undefined} isDev
- * @property {integer | undefined} port
- * @property {string | undefined} databaseURL
- * @property {string | undefined} jwtAccessTokenSecret
- */
+type Config = {
+  isDev?: boolean;
+  port?: number;
+  databaseURL?: string;
+  jwtAccessTokenSecret?: string;
+};
 
-/**
- * @type {Config}
- */
-export let config = null;
+export let config: Config = null;
 
 export function loadConfig() {
   dotenv.config();

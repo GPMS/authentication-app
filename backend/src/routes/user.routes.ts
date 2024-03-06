@@ -1,9 +1,6 @@
-import { verifyToken } from "../middlewares/authJWT.js";
-import {
-  getUserInfo,
-  updateUserInfo,
-} from "../controllers/user.controllers.js";
-import { BadRequest } from "../errors.js";
+import { verifyToken } from "../middlewares/authJWT";
+import { getUserInfo, updateUserInfo } from "../controllers/user.controllers";
+import { BadRequest } from "../errors";
 
 /**
  * @param {import('express').Express} app
