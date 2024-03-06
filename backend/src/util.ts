@@ -3,6 +3,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "./config";
 
 export function generateToken(payload: any) {
+  if (!config?.jwtAccessTokenSecret) {
+    throw Error("Set ACCESS TOKEN SECRET environmental variable");
+  }
   return jwt.sign(payload, config.jwtAccessTokenSecret);
 }
 
@@ -14,6 +17,9 @@ declare module "jsonwebtoken" {
 
 export function verifyJwt(token: string): Promise<jwt.JwtPayload> {
   return new Promise((resolve, reject) => {
+    if (!config?.jwtAccessTokenSecret) {
+      throw Error("Set ACCESS TOKEN SECRET environmental variable");
+    }
     jwt.verify(token, config.jwtAccessTokenSecret, (err, user) => {
       if (err) {
         reject(err);

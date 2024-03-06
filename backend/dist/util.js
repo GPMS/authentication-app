@@ -17,11 +17,17 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
 function generateToken(payload) {
+    if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
+        throw Error("Set ACCESS TOKEN SECRET environmental variable");
+    }
     return jsonwebtoken_1.default.sign(payload, config_1.config.jwtAccessTokenSecret);
 }
 exports.generateToken = generateToken;
 function verifyJwt(token) {
     return new Promise((resolve, reject) => {
+        if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
+            throw Error("Set ACCESS TOKEN SECRET environmental variable");
+        }
         jsonwebtoken_1.default.verify(token, config_1.config.jwtAccessTokenSecret, (err, user) => {
             if (err) {
                 reject(err);

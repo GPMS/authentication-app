@@ -19,10 +19,12 @@ function register(email, password) {
             return null;
         }
         const hashedPassword = yield (0, util_1.hashPassword)(password);
+        console.log(hashedPassword);
         const createdUser = yield user_1.User.create({
             email,
             password: hashedPassword,
         });
+        console.log(createdUser);
         return (0, util_1.generateToken)({ id: createdUser.id });
     });
 }

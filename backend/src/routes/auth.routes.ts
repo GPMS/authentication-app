@@ -1,11 +1,8 @@
+import { Express } from "express";
 import { login, register, COOKIE_NAME } from "../controllers/auth.controllers";
 import { verifyToken } from "../middlewares/authJWT";
 import { BadRequest, Forbidden, Conflict } from "../errors";
-
-/**
- * @param {import('express').Express} app
- */
-export function authRoutes(app) {
+export function authRoutes(app: Express) {
   app.post("/auth/register", async (req, res) => {
     console.info("Register");
     const { email, password } = req.body;

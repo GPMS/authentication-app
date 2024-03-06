@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 
 export async function connectDB() {
   try {
+    if (!config?.databaseURL) {
+      throw new Error("Set DATABASE_URL environmental variable");
+    }
     console.info("INFO: DB: Trying to connect to", config.databaseURL);
     await mongoose.connect(config.databaseURL);
     console.info("INFO: DB: Successfully connected.");

@@ -21,6 +21,7 @@ const auth_routes_1 = require("./routes/auth.routes");
 const user_routes_1 = require("./routes/user.routes");
 const db_1 = require("./db");
 const handleErrors_1 = require("./middlewares/handleErrors");
+const user_1 = require("./models/user");
 let server = null;
 let shuttingDown = false;
 function cleanup() {
@@ -40,6 +41,8 @@ function start() {
     return __awaiter(this, void 0, void 0, function* () {
         console.info("INFO: Starting Express.js application");
         (0, config_1.loadConfig)();
+        if (!config_1.config)
+            return;
         const app = (0, express_1.default)();
         app.use((0, cors_1.default)({
             origin: config_1.config.isDev
@@ -58,6 +61,12 @@ function start() {
         app.get("/", (req, res) => {
             res.send({ message: "Welcome to my app" });
         });
+        app.get("/findall", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log("allusers", yield user_1.User.find().exec());
+        }));
+        app.post("/removeall", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield user_1.User.deleteMany().exec();
+        }));
         (0, auth_routes_1.authRoutes)(app);
         (0, user_routes_1.userRoutes)(app);
         app.use(handleErrors_1.handleErrors);

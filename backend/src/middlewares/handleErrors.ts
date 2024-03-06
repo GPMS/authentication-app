@@ -1,13 +1,12 @@
+import { Request, Response, NextFunction } from "express";
 import { CustomError } from "../errors";
 
-/**
- *
- * @param {Error} err
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
-export function handleErrors(err, req, res, next) {
+export function handleErrors(
+  err: CustomError | Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (err instanceof CustomError) {
     return res.status(err.statusCode).json({ message: err.message });
   }

@@ -34,6 +34,7 @@ async function start() {
   console.info("INFO: Starting Express.js application");
 
   loadConfig();
+  if (!config) return;
 
   const app = express();
 
@@ -66,7 +67,7 @@ async function start() {
 
   await connectDB();
   server = app.listen(config.port, () => {
-    console.info(`INFO: Listening on port ${config.port}...`);
+    console.info(`INFO: Listening on port ${config!.port}...`);
   });
 
   process.on("SIGINT", cleanup);
