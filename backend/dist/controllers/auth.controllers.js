@@ -23,7 +23,7 @@ function register(email, password) {
             email,
             password: hashedPassword,
         });
-        return (0, util_1.generateToken)({ id: createdUser.id });
+        return (0, util_1.generateToken)(createdUser.id);
     });
 }
 exports.register = register;
@@ -33,7 +33,7 @@ function login(email, password) {
         if (!user || !(yield (0, util_1.verifyPassword)(password, user.password))) {
             return null;
         }
-        return (0, util_1.generateToken)({ id: user.id });
+        return (0, util_1.generateToken)(user.id);
     });
 }
 exports.login = login;

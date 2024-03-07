@@ -25,7 +25,7 @@ function verifyToken(req, res, next) {
             throw new errors_1.BadRequest("No token provided");
         // Validate token
         try {
-            const { id } = yield (0, util_1.verifyJwt)(token);
+            const id = yield (0, util_1.verifyJwt)(token);
             req.userId = id;
             next();
         }

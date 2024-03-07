@@ -35,13 +35,10 @@ function userRoutes(app) {
         if (!req.userId) {
             throw new Error("No user id");
         }
-        const newToken = yield (0, user_controllers_1.updateUserInfo)(req.userId, updateBody.data);
-        if (!newToken) {
+        if (!(yield (0, user_controllers_1.updateUserInfo)(req.userId, updateBody.data))) {
             throw new errors_1.BadRequest(`no user with id ${req.userId}`);
         }
-        res.send({
-            accessToken: newToken,
-        });
+        res.send();
     }));
 }
 exports.userRoutes = userRoutes;

@@ -15,12 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.hashPassword = exports.verifyPassword = exports.verifyJwt = exports.generateToken = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const zod_1 = __importDefault(require("zod"));
 const config_1 = require("./config");
-function generateToken(payload) {
+const jwtPayloadSchema = zod_1.default.object({
+    id: zod_1.default.string(),
+});
+function generateToken(id) {
     if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
         throw Error("Set ACCESS TOKEN SECRET environmental variable");
     }
-    return jsonwebtoken_1.default.sign(payload, config_1.config.jwtAccessTokenSecret);
+    return jsonwebtoken_1.default.sign({ id }, config_1.config.jwtAccessTokenSecret);
 }
 exports.generateToken = generateToken;
 function verifyJwt(token) {
@@ -28,12 +32,18 @@ function verifyJwt(token) {
         if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
             throw Error("Set ACCESS TOKEN SECRET environmental variable");
         }
-        jsonwebtoken_1.default.verify(token, config_1.config.jwtAccessTokenSecret, (err, user) => {
+        jsonwebtoken_1.default.verify(token, config_1.config.jwtAccessTokenSecret, (err, payload) => {
             if (err) {
                 reject(err);
                 return;
             }
-            resolve(user);
+            const parsedPayload = jwtPayloadSchema.safeParse(payload);
+            if (!parsedPayload.success) {
+                const issues = parsedPayload.error.issues.join("; ");
+                reject(new Error(`Token payload parse error: ${issues}`));
+                return;
+            }
+            resolve(parsedPayload.data.id);
         });
     });
 }

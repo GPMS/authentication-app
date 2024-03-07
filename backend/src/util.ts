@@ -1,6 +1,12 @@
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import z from "zod";
 import { config } from "./config";
+
+const jwtPayloadSchema = z.object({
+  id: z.string(),
+});
+export type JwtPayload = z.infer<typeof jwtPayloadSchema>;
 
 export function generateToken(payload: any) {
   if (!config?.jwtAccessTokenSecret) {
@@ -9,23 +15,23 @@ export function generateToken(payload: any) {
   return jwt.sign(payload, config.jwtAccessTokenSecret);
 }
 
-declare module "jsonwebtoken" {
-  export interface JwtPayload {
-    id: string;
-  }
-}
-
-export function verifyJwt(token: string): Promise<jwt.JwtPayload> {
+export function verifyJwt(token: string): Promise<JwtPayload> {
   return new Promise((resolve, reject) => {
     if (!config?.jwtAccessTokenSecret) {
       throw Error("Set ACCESS TOKEN SECRET environmental variable");
     }
-    jwt.verify(token, config.jwtAccessTokenSecret, (err, user) => {
+    jwt.verify(token, config.jwtAccessTokenSecret, (err, payload) => {
       if (err) {
         reject(err);
         return;
       }
-      resolve(user as JwtPayload);
+      const parsedPayload = jwtPayloadSchema.safeParse(payload);
+      if (!parsedPayload.success) {
+        const issues = parsedPayload.error.issues.join("; ");
+        reject(new Error(`Token payload parse error: ${issues}`));
+        return;
+      }
+      resolve(parsedPayload.data);
     });
   });
 }

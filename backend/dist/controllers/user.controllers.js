@@ -21,16 +21,13 @@ function getUserInfo(userId) {
 exports.getUserInfo = getUserInfo;
 function updateUserInfo(userId, newUserInfo) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (newUserInfo === null || newUserInfo === void 0 ? void 0 : newUserInfo.password) {
+        if (newUserInfo.password) {
             newUserInfo.password = yield (0, util_1.hashPassword)(newUserInfo.password);
         }
         const updatedUser = yield user_1.User.findByIdAndUpdate(userId, {
             $set: newUserInfo,
         }, { returnDocument: "after" }).exec();
-        if (!updatedUser) {
-            return null;
-        }
-        return (0, util_1.generateToken)({ id: updatedUser.id });
+        return updatedUser != null;
     });
 }
 exports.updateUserInfo = updateUserInfo;
