@@ -8,14 +8,14 @@ const jwtPayloadSchema = z.object({
 });
 export type JwtPayload = z.infer<typeof jwtPayloadSchema>;
 
-export function generateToken(payload: any) {
+export function generateToken(id: string) {
   if (!config?.jwtAccessTokenSecret) {
     throw Error("Set ACCESS TOKEN SECRET environmental variable");
   }
-  return jwt.sign(payload, config.jwtAccessTokenSecret);
+  return jwt.sign({ id }, config.jwtAccessTokenSecret);
 }
 
-export function verifyJwt(token: string): Promise<JwtPayload> {
+export function verifyJwt(token: string): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!config?.jwtAccessTokenSecret) {
       throw Error("Set ACCESS TOKEN SECRET environmental variable");
@@ -31,7 +31,7 @@ export function verifyJwt(token: string): Promise<JwtPayload> {
         reject(new Error(`Token payload parse error: ${issues}`));
         return;
       }
-      resolve(parsedPayload.data);
+      resolve(parsedPayload.data.id);
     });
   });
 }

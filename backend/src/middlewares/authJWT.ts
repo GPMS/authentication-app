@@ -15,7 +15,7 @@ export async function verifyToken(
 
   // Validate token
   try {
-    const { id } = await verifyJwt(token);
+    const id = await verifyJwt(token);
     req.userId = id;
     next();
   } catch (err) {

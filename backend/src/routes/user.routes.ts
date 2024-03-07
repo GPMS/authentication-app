@@ -25,12 +25,9 @@ export function userRoutes(app: Express) {
     if (!req.userId) {
       throw new Error("No user id");
     }
-    const newToken = await updateUserInfo(req.userId, updateBody.data);
-    if (!newToken) {
+    if (!(await updateUserInfo(req.userId, updateBody.data))) {
       throw new BadRequest(`no user with id ${req.userId}`);
     }
-    res.send({
-      accessToken: newToken,
-    });
+    res.send();
   });
 }

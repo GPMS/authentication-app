@@ -10,7 +10,7 @@ export async function updateUserInfo(
   userId: string,
   newUserInfo: Partial<TUser>
 ) {
-  if (newUserInfo?.password) {
+  if (newUserInfo.password) {
     newUserInfo.password = await hashPassword(newUserInfo.password);
   }
   const updatedUser = await User.findByIdAndUpdate(
@@ -20,8 +20,5 @@ export async function updateUserInfo(
     },
     { returnDocument: "after" }
   ).exec();
-  if (!updatedUser) {
-    return null;
-  }
-  return generateToken({ id: updatedUser.id });
+  return updatedUser != null;
 }

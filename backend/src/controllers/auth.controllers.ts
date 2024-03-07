@@ -12,7 +12,7 @@ export async function register(email: string, password: string) {
     email,
     password: hashedPassword,
   });
-  return generateToken({ id: createdUser.id });
+  return generateToken(createdUser.id);
 }
 
 export async function login(email: string, password: string) {
@@ -20,5 +20,5 @@ export async function login(email: string, password: string) {
   if (!user || !(await verifyPassword(password, user.password))) {
     return null;
   }
-  return generateToken({ id: user.id });
+  return generateToken(user.id);
 }
