@@ -1,14 +1,29 @@
 import { Express } from "express";
+import z from "zod";
 import { login, register, COOKIE_NAME } from "../controllers/auth.controllers";
 import { verifyToken } from "../middlewares/authJWT";
 import { BadRequest, Forbidden, Conflict } from "../errors";
+
+const authSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "Password must contain at least 8 characters" }),
+});
+
+function parseAuthBody(body: unknown) {
+  const authBody = authSchema.safeParse(body);
+  if (!authBody.success) {
+    const issues = authBody.error.issues.map((issue) => issue.message);
+    throw new BadRequest(issues.join("; "));
+  }
+  return authBody.data;
+}
+
 export function authRoutes(app: Express) {
   app.post("/auth/register", async (req, res) => {
     console.info("Register");
-    const { email, password } = req.body;
-    if (!password || !email) {
-      throw new BadRequest("No email or password provided");
-    }
+    const { email, password } = parseAuthBody(req.body);
     const token = await register(email, password);
     if (!token) {
       throw new Conflict(`User with email ${email} already exists`);
@@ -20,10 +35,7 @@ export function authRoutes(app: Express) {
   });
   app.post("/auth/login", async (req, res) => {
     console.info("Login");
-    const { email, password } = req.body;
-    if (!password || !email) {
-      throw new BadRequest("No email or password provided");
-    }
+    const { email, password } = parseAuthBody(req.body);
     const token = await login(email, password);
     if (!token) {
       throw new Forbidden("Invalid email or password");

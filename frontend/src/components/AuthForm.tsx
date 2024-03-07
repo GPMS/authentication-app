@@ -3,11 +3,22 @@ import { MdEmail, MdLock } from 'react-icons/md';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { AuthService } from '../services';
 import { SocialLogin } from './SocialLogin';
 import { UserDTO } from '../types';
 import { useToken } from '../hooks/useToken';
+
+const authSchema = z.object({
+  email: z.string({ required_error: 'Email is required' }).email(),
+  password: z
+    .string({ required_error: 'Password is required' })
+    .min(8, { message: 'Password must have at least 8 characters' }),
+});
+
+type AuthFormFields = z.infer<typeof authSchema>;
 
 function AuthForm({ isRegister }: { isRegister: boolean }) {
   const { setToken } = useToken();
@@ -17,7 +28,10 @@ function AuthForm({ isRegister }: { isRegister: boolean }) {
     handleSubmit,
     register,
     formState: { errors, isValid, isDirty },
-  } = useForm<UserDTO>();
+  } = useForm<AuthFormFields>({
+    mode: 'onBlur',
+    resolver: zodResolver(authSchema),
+  });
 
   const onSubmit: SubmitHandler<UserDTO> = async (formData) => {
     toast.promise(

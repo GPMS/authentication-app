@@ -3,9 +3,10 @@ import { MdCameraAlt } from 'react-icons/md';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useToken } from '../hooks/useToken';
-import { User } from '../types';
+import { User, userSchema } from '../types';
 import { UserService } from '../services';
 
 export function PersonalInfoEditForm({ user }: { user: User }) {
@@ -18,6 +19,8 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
     formState: { errors, isValid, isDirty },
   } = useForm<Partial<User>>({
     defaultValues: user,
+    mode: 'onBlur',
+    resolver: zodResolver(userSchema),
   });
 
   const onSubmit: SubmitHandler<Partial<User>> = async (formData) => {
