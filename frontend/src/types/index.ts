@@ -6,6 +6,7 @@ export const userSchema = z.object({
   name: z.string(),
   bio: z.string(),
   phone: z.string(),
+  provider: z.union([z.literal('local'), z.literal('github')]),
   password: z
     .string()
     .min(8, { message: 'Password must have at least 8 characters' })
@@ -18,7 +19,13 @@ export type AuthResponse = {
   accessToken: string;
 };
 
+export type OauthResponse = {
+  url: string;
+};
+
 export type UserDTO = {
   email: string;
   password: string;
 };
+
+export type Socials = 'github';

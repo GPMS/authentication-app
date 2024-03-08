@@ -129,6 +129,7 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
             type="email"
             {...register('email')}
             placeholder="myemail@ssss.com"
+            readOnly={user.provider !== 'local'}
           />
         </label>
         {errors.email && <p className="text-red-400">{errors.email.message}</p>}
@@ -141,6 +142,7 @@ export function PersonalInfoEditForm({ user }: { user: User }) {
             type="text"
             {...register('password')}
             placeholder="*******"
+            readOnly={user.provider !== 'local'}
           />
         </label>
         {errors.password && <p className="text-red-400">{errors.password.message}</p>}

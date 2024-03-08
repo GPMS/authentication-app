@@ -55,7 +55,7 @@
 This application/site was created as a submission to a [DevChallenges](https://devchallenges.io/challenges) challenge. The [challenge](https://legacy.devchallenges.io/challenges/N1fvBjQfhlkctmwj1tnw) was to build an application to complete the following user stories:
 - [x] I can register a new account
 - [x] I can log in
-- [ ] I can log in or register with at least one of the following services: Google, Facebook, Twitter or Github
+- [x] I can log in or register with at least one of the following services: Google, Facebook, Twitter or Github (only Github)
 - [x] I can sign out
 - [x] I can see my profile details
 - [x] I can edit my details including: photo, name, bio, phone, email and password

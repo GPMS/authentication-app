@@ -22,6 +22,7 @@ function register(email, password) {
         const createdUser = yield user_1.User.create({
             email,
             password: hashedPassword,
+            provider: "local",
         });
         return (0, util_1.generateToken)(createdUser.id);
     });

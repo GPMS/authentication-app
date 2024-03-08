@@ -7,12 +7,17 @@ export const UserSchema = z.object({
   name: z.string(),
   bio: z.string(),
   phone: z.string(),
+  provider: z.union([z.literal("local"), z.literal("github")]),
   password: z
     .string()
     .min(8, { message: "Password must have at least 8 characters" }),
 });
 
 export type TUser = z.infer<typeof UserSchema>;
+
+function isProviderLocal(this: TUser) {
+  return this.provider === "local";
+}
 
 const userSchema = new mongoose.Schema<TUser>({
   email: {
@@ -24,9 +29,13 @@ const userSchema = new mongoose.Schema<TUser>({
   name: String,
   bio: String,
   phone: String,
-  password: {
+  provider: {
     type: String,
     required: true,
+  },
+  password: {
+    type: String,
+    required: isProviderLocal,
     select: false,
     minlength: 8,
   },

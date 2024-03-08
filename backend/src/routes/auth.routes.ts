@@ -3,6 +3,8 @@ import z from "zod";
 import { login, register, COOKIE_NAME } from "../controllers/auth.controllers";
 import { verifyToken } from "../middlewares/authJWT";
 import { BadRequest, Forbidden, Conflict } from "../errors";
+import { config } from "../config";
+import { githubOauth } from "../controllers/github.controllers";
 
 const authSchema = z.object({
   email: z.string().email(),
@@ -48,5 +50,24 @@ export function authRoutes(app: Express) {
   app.post("/auth/logout", verifyToken, (_, res) => {
     res.clearCookie(COOKIE_NAME);
     res.send();
+  });
+
+  app.get("/auth/github", (_, res) => {
+    const redirectUrl = new URL(
+      `https://github.com/login/oauth/authorize?client_id=${config?.github.clientId}`
+    );
+    res.send({ url: redirectUrl });
+  });
+
+  app.get("/auth/github/callback", async (req, res) => {
+    const code = req.query.code as string | undefined;
+
+    if (!code) {
+      throw new BadRequest("Error during GitHub authentication");
+    }
+
+    const token = await githubOauth(code);
+    res.cookie(COOKIE_NAME, token, { httpOnly: true });
+    res.redirect(`${config?.frontendUrl}/user`);
   });
 }

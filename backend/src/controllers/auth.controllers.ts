@@ -11,6 +11,7 @@ export async function register(email: string, password: string) {
   const createdUser = await User.create({
     email,
     password: hashedPassword,
+    provider: "local",
   });
   return generateToken(createdUser.id);
 }

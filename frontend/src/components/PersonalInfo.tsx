@@ -50,7 +50,10 @@ export function PersonalInfo({ user }: { user: User }) {
           <InfoRow header="Bio" data={user.bio} />
           <InfoRow header="phone" data={user.phone} />
           <InfoRow header="email" data={user.email} />
-          <InfoRow header="password" data="************" />
+          <InfoRow
+            header="password"
+            data={user.provider === 'local' ? '************' : `From ${user.provider}`}
+          />
         </tbody>
       </table>
     </div>

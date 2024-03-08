@@ -40,9 +40,7 @@ async function start() {
 
   app.use(
     cors({
-      origin: config.isDev
-        ? "http://localhost:5173"
-        : "https://authentication-app-frontend-five.vercel.app",
+      origin: config.frontendUrl,
       credentials: true,
     })
   );

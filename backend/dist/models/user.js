@@ -12,10 +12,14 @@ exports.UserSchema = zod_1.default.object({
     name: zod_1.default.string(),
     bio: zod_1.default.string(),
     phone: zod_1.default.string(),
+    provider: zod_1.default.union([zod_1.default.literal("local"), zod_1.default.literal("github")]),
     password: zod_1.default
         .string()
         .min(8, { message: "Password must have at least 8 characters" }),
 });
+function isProviderLocal() {
+    return this.provider === "local";
+}
 const userSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
@@ -26,9 +30,13 @@ const userSchema = new mongoose_1.default.Schema({
     name: String,
     bio: String,
     phone: String,
-    password: {
+    provider: {
         type: String,
         required: true,
+    },
+    password: {
+        type: String,
+        required: isProviderLocal,
         select: false,
         minlength: 8,
     },

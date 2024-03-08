@@ -45,9 +45,7 @@ function start() {
             return;
         const app = (0, express_1.default)();
         app.use((0, cors_1.default)({
-            origin: config_1.config.isDev
-                ? "http://localhost:5173"
-                : "https://authentication-app-frontend-five.vercel.app",
+            origin: config_1.config.frontendUrl,
             credentials: true,
         }));
         app.use(express_1.default.json());

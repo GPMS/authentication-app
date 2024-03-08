@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { AuthResponse, UserDTO, User } from '../types';
+import { AuthResponse, UserDTO, User, Socials, OauthResponse } from '../types';
 
 const api = axios.create({
   baseURL: import.meta.env.DEV
@@ -24,6 +24,10 @@ export const AuthService = {
       password: user.password,
     });
     return data;
+  },
+  oauth: async (client: Socials) => {
+    const { data } = await api.get<OauthResponse>(`auth/${client}`);
+    return data.url;
   },
   logoutUser: () => {
     return api.post('auth/logout');
