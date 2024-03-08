@@ -27,12 +27,12 @@ export async function githubOauth(code: string) {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  const githubEmail = userResponse.data.email as string;
+  const { name, email, avatar_url: photo, bio } = userResponse.data;
 
   // Create new user if it doesn't already exist
-  let user = await User.findOne({ email: githubEmail }).exec();
+  let user = await User.findOne({ email }).exec();
   if (!user) {
-    user = await User.create({ email: githubEmail, provider: "github" });
+    user = await User.create({ email, provider: "github", name, photo, bio });
     console.info(`GitHub Oauth: Created new user`);
   }
 

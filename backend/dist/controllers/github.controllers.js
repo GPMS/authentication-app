@@ -37,11 +37,11 @@ function githubOauth(code) {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        const githubEmail = userResponse.data.email;
+        const { name, email, avatar_url: photo, bio } = userResponse.data;
         // Create new user if it doesn't already exist
-        let user = yield user_1.User.findOne({ email: githubEmail }).exec();
+        let user = yield user_1.User.findOne({ email }).exec();
         if (!user) {
-            user = yield user_1.User.create({ email: githubEmail, provider: "github" });
+            user = yield user_1.User.create({ email, provider: "github", name, photo, bio });
             console.info(`GitHub Oauth: Created new user`);
         }
         console.info(`GitHub Oauth: User id is ${user.id}`);
