@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const zod_1 = __importDefault(require("zod"));
 exports.UserSchema = zod_1.default.object({
     email: zod_1.default.string().email().min(1, { message: "Email cannot be blank" }),
-    photo: zod_1.default.string().url(),
+    photo: zod_1.default.string().url().or(zod_1.default.literal("")),
     name: zod_1.default.string(),
     bio: zod_1.default.string(),
     phone: zod_1.default.string(),

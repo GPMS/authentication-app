@@ -3,7 +3,7 @@ import z from "zod";
 
 export const UserSchema = z.object({
   email: z.string().email().min(1, { message: "Email cannot be blank" }),
-  photo: z.string().url(),
+  photo: z.string().url().or(z.literal("")),
   name: z.string(),
   bio: z.string(),
   phone: z.string(),
