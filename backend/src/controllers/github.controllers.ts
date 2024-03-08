@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { generateToken } from "../util";
 
 export async function githubOauth(code: string) {
+  console.info(`GitHub Oauth: Callback called with code ${code}`);
   // Exchange the code for an access token
   const { data } = await axios.post(
     "https://github.com/login/oauth/access_token",
@@ -32,7 +33,10 @@ export async function githubOauth(code: string) {
   let user = await User.findOne({ email: githubEmail }).exec();
   if (!user) {
     user = await User.create({ email: githubEmail, provider: "github" });
+    console.info(`GitHub Oauth: Created new user`);
   }
+
+  console.info(`GitHub Oauth: User id is ${user.id}`);
 
   return generateToken(user.id);
 }

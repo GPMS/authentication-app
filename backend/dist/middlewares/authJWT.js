@@ -26,6 +26,7 @@ function verifyToken(req, res, next) {
         // Validate token
         try {
             const id = yield (0, util_1.verifyJwt)(token);
+            console.info(`verifyToken: Current user id is ${id}`);
             req.userId = id;
             next();
         }

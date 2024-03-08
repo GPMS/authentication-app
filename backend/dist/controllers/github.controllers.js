@@ -19,6 +19,7 @@ const user_1 = require("../models/user");
 const util_1 = require("../util");
 function githubOauth(code) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.info(`GitHub Oauth: Callback called with code ${code}`);
         // Exchange the code for an access token
         const { data } = yield axios_1.default.post("https://github.com/login/oauth/access_token", {
             client_id: config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientId,
@@ -41,7 +42,9 @@ function githubOauth(code) {
         let user = yield user_1.User.findOne({ email: githubEmail }).exec();
         if (!user) {
             user = yield user_1.User.create({ email: githubEmail, provider: "github" });
+            console.info(`GitHub Oauth: Created new user`);
         }
+        console.info(`GitHub Oauth: User id is ${user.id}`);
         return (0, util_1.generateToken)(user.id);
     });
 }
