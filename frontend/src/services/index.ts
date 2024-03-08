@@ -35,8 +35,13 @@ export const AuthService = {
 };
 
 export const UserService = {
-  getUserInfo: async () => {
-    const { data } = await api.get<User>('/user');
+  getUserInfo: async (token?: string) => {
+    const config = token
+      ? {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      : undefined;
+    const { data } = await api.get<User>('/user', config);
     return data;
   },
   updateUser: async (updatedUser: Partial<User>) => {

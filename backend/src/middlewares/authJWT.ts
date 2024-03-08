@@ -9,9 +9,17 @@ export async function verifyToken(
   res: Response,
   next: NextFunction
 ) {
-  // Get JWT access token from request
-  const token = req.cookies[COOKIE_NAME];
-  if (!token) throw new BadRequest("No token provided");
+  // Try to get token from header, if succeeded then set cookie
+  let token;
+  token = req.headers["authorization"]?.split(" ")[1];
+  if (token) {
+    res.cookie(COOKIE_NAME, token, { httpOnly: true });
+  } else {
+    // Failed so try to get token from cookie
+    token = req.cookies[COOKIE_NAME];
+    // If failed yet again throw error
+    if (!token) throw new BadRequest("No token provided");
+  }
 
   // Validate token
   try {

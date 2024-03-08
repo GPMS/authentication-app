@@ -18,11 +18,21 @@ const util_1 = require("../util");
 const auth_controllers_1 = require("../controllers/auth.controllers");
 const errors_1 = require("../errors");
 function verifyToken(req, res, next) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        // Get JWT access token from request
-        const token = req.cookies[auth_controllers_1.COOKIE_NAME];
-        if (!token)
-            throw new errors_1.BadRequest("No token provided");
+        // Try to get token from header, if succeeded then set cookie
+        let token;
+        token = (_a = req.headers["authorization"]) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+        if (token) {
+            res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
+        }
+        else {
+            // Failed so try to get token from cookie
+            token = req.cookies[auth_controllers_1.COOKIE_NAME];
+            // If failed yet again throw error
+            if (!token)
+                throw new errors_1.BadRequest("No token provided");
+        }
         // Validate token
         try {
             const id = yield (0, util_1.verifyJwt)(token);

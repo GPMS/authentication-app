@@ -3,17 +3,18 @@ import { User } from '../types';
 import { UserService } from '../services';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     async function getUser() {
       try {
-        const userInfo = await UserService.getUserInfo();
+        const userInfo = await UserService.getUserInfo(searchParams.get('token') ?? undefined);
         setUser(userInfo);
         setIsLoading(false);
       } catch (e) {

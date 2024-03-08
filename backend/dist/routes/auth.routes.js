@@ -72,11 +72,7 @@ function authRoutes(app) {
             throw new errors_1.BadRequest("Error during GitHub authentication");
         }
         const token = yield (0, github_controllers_1.githubOauth)(code);
-        res.cookie(auth_controllers_1.COOKIE_NAME, token, {
-            httpOnly: true,
-            domain: config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl,
-        });
-        res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user`);
+        res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user?token=${token}`);
     }));
 }
 exports.authRoutes = authRoutes;

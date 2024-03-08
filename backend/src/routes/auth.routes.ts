@@ -67,7 +67,6 @@ export function authRoutes(app: Express) {
     }
 
     const token = await githubOauth(code);
-    res.cookie(COOKIE_NAME, token, { httpOnly: true });
-    res.redirect(`${config?.frontendUrl}/user`);
+    res.redirect(`${config?.frontendUrl}/user?token=${token}`);
   });
 }
