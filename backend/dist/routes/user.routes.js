@@ -14,7 +14,7 @@ const express_1 = require("express");
 const authJWT_1 = require("../middlewares/authJWT");
 const user_controllers_1 = require("../controllers/user.controllers");
 const errors_1 = require("../errors");
-const user_1 = require("../models/user");
+const user_1 = require("../database/models/user");
 exports.userRouter = (0, express_1.Router)();
 exports.userRouter.get("/", authJWT_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.userId) {

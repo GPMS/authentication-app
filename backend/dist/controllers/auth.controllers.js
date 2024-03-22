@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = exports.COOKIE_NAME = void 0;
 const util_1 = require("../util");
-const user_1 = require("../models/user");
+const user_1 = require("../database/models/user");
 exports.COOKIE_NAME = "token";
 function register(email, password) {
     return __awaiter(this, void 0, void 0, function* () {

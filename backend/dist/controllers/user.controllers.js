@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserInfo = exports.getUserInfo = void 0;
 const util_1 = require("../util");
-const user_1 = require("../models/user");
+const user_1 = require("../database/models/user");
 function getUserInfo(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = yield user_1.User.findById(userId).select({ _id: 0, __v: 0 }).exec();

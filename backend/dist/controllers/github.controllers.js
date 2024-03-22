@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.githubOauth = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../config");
-const user_1 = require("../models/user");
+const user_1 = require("../database/models/user");
 const util_1 = require("../util");
 function githubOauth(code) {
     return __awaiter(this, void 0, void 0, function* () {

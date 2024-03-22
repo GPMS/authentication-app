@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "../config";
-import { User } from "../models/user";
+import { User } from "../database/models/user";
 import { generateToken } from "../util";
 
 export async function githubOauth(code: string) {

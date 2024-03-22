@@ -6,7 +6,7 @@ import "express-async-errors";
 import { config, loadConfig } from "./config";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
-import { connectDB, disconnectDB } from "./db";
+import { connectDB, disconnectDB } from "./database/connection";
 import { handleErrors } from "./middlewares/handleErrors";
 import { Server } from "http";
 

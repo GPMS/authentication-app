@@ -1,5 +1,5 @@
 import { generateToken, hashPassword } from "../util";
-import { User, TUser } from "../models/user";
+import { User, TUser } from "../database/models/user";
 
 export async function getUserInfo(userId: string) {
   let user = await User.findById(userId).select({ _id: 0, __v: 0 }).exec();

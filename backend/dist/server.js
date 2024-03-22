@@ -19,7 +19,7 @@ require("express-async-errors");
 const config_1 = require("./config");
 const auth_routes_1 = require("./routes/auth.routes");
 const user_routes_1 = require("./routes/user.routes");
-const db_1 = require("./db");
+const connection_1 = require("./database/connection");
 const handleErrors_1 = require("./middlewares/handleErrors");
 let server = null;
 let shuttingDown = false;
@@ -28,7 +28,7 @@ function cleanup() {
         return;
     shuttingDown = true;
     server.close(() => __awaiter(this, void 0, void 0, function* () {
-        yield (0, db_1.disconnectDB)();
+        yield (0, connection_1.disconnectDB)();
         process.exit();
     }));
     setTimeout(() => {
@@ -61,7 +61,7 @@ function start() {
         app.use("/auth/", auth_routes_1.authRouter);
         app.use("/user/", user_routes_1.userRouter);
         app.use(handleErrors_1.handleErrors);
-        yield (0, db_1.connectDB)();
+        yield (0, connection_1.connectDB)();
         server = app.listen(config_1.config.port, () => {
             console.info(`INFO: Listening on port ${config_1.config.port}...`);
         });
