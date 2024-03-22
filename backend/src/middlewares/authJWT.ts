@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { verifyJwt } from "../util";
+import { verifyJwt } from "../utils";
 import { COOKIE_NAME } from "../controllers/auth.controllers";
 import { BadRequest, Forbidden } from "../errors";
 import { NextFunction, Request, Response } from "express";

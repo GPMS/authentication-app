@@ -8,26 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserInfo = exports.getUserInfo = void 0;
-const utils_1 = require("../utils");
-const user_1 = require("../database/models/user");
-function getUserInfo(userId) {
+exports.hashPassword = exports.verifyPassword = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
+function verifyPassword(password, actualPassword) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user = yield user_1.User.findById(userId).select({ _id: 0, __v: 0 }).exec();
-        return user;
+        return yield bcrypt_1.default.compare(password, actualPassword);
     });
 }
-exports.getUserInfo = getUserInfo;
-function updateUserInfo(userId, newUserInfo) {
+exports.verifyPassword = verifyPassword;
+function hashPassword(password) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (newUserInfo.password) {
-            newUserInfo.password = yield (0, utils_1.hashPassword)(newUserInfo.password);
-        }
-        const updatedUser = yield user_1.User.findByIdAndUpdate(userId, {
-            $set: newUserInfo,
-        }, { returnDocument: "after" }).exec();
-        return updatedUser != null;
+        return yield bcrypt_1.default.hash(password, 10);
     });
 }
-exports.updateUserInfo = updateUserInfo;
+exports.hashPassword = hashPassword;

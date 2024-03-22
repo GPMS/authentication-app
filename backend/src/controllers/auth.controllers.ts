@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword, generateToken } from "../util";
+import { hashPassword, verifyPassword, generateToken } from "../utils";
 import { User } from "../database/models/user";
 
 export const COOKIE_NAME = "token";

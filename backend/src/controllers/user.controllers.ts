@@ -1,4 +1,4 @@
-import { generateToken, hashPassword } from "../util";
+import { generateToken, hashPassword } from "../utils";
 import { User, TUser } from "../database/models/user";
 
 export async function getUserInfo(userId: string) {

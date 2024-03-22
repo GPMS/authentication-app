@@ -1,7 +1,6 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import z from "zod";
-import { config } from "./config";
+import { config } from "../config";
 
 const jwtPayloadSchema = z.object({
   id: z.string(),
@@ -34,12 +33,4 @@ export function verifyJwt(token: string): Promise<string> {
       resolve(parsedPayload.data.id);
     });
   });
-}
-
-export async function verifyPassword(password: string, actualPassword: string) {
-  return await bcrypt.compare(password, actualPassword);
-}
-
-export async function hashPassword(password: string) {
-  return await bcrypt.hash(password, 10);
 }

@@ -16,7 +16,7 @@ exports.githubOauth = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../config");
 const user_1 = require("../database/models/user");
-const util_1 = require("../util");
+const utils_1 = require("../utils");
 function githubOauth(code) {
     return __awaiter(this, void 0, void 0, function* () {
         console.info(`GitHub Oauth: Callback called with code ${code}`);
@@ -45,7 +45,7 @@ function githubOauth(code) {
             console.info(`GitHub Oauth: Created new user`);
         }
         console.info(`GitHub Oauth: User id is ${user.id}`);
-        return (0, util_1.generateToken)(user.id);
+        return (0, utils_1.generateToken)(user.id);
     });
 }
 exports.githubOauth = githubOauth;

@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const util_1 = require("../util");
+const utils_1 = require("../utils");
 const auth_controllers_1 = require("../controllers/auth.controllers");
 const errors_1 = require("../errors");
 function verifyToken(req, res, next) {
@@ -35,7 +35,7 @@ function verifyToken(req, res, next) {
         }
         // Validate token
         try {
-            const id = yield (0, util_1.verifyJwt)(token);
+            const id = yield (0, utils_1.verifyJwt)(token);
             console.info(`verifyToken: Current user id is ${id}`);
             req.userId = id;
             next();
