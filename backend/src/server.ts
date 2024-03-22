@@ -58,8 +58,8 @@ async function start() {
     res.send({ message: "Welcome to my app" });
   });
 
-  app.use("/auth/", authRouter);
-  app.use("/user/", userRouter);
+  app.use("/auth", authRouter);
+  app.use("/user", userRouter);
 
   app.use(handleErrors);
 
