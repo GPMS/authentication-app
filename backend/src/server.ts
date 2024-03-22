@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import "express-async-errors";
 
 import { config, loadConfig } from "./config";
-import { authRoutes } from "./routes/auth.routes";
-import { userRoutes } from "./routes/user.routes";
+import { authRouter } from "./routes/auth.routes";
+import { userRouter } from "./routes/user.routes";
 import { connectDB, disconnectDB } from "./db";
 import { handleErrors } from "./middlewares/handleErrors";
 import { Server } from "http";
@@ -58,8 +58,8 @@ async function start() {
     res.send({ message: "Welcome to my app" });
   });
 
-  authRoutes(app);
-  userRoutes(app);
+  app.use("/auth/", authRouter);
+  app.use("/user/", userRouter);
 
   app.use(handleErrors);
 

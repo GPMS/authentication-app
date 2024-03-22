@@ -58,8 +58,8 @@ function start() {
         app.get("/", (req, res) => {
             res.send({ message: "Welcome to my app" });
         });
-        (0, auth_routes_1.authRoutes)(app);
-        (0, user_routes_1.userRoutes)(app);
+        app.use("/auth/", auth_routes_1.authRouter);
+        app.use("/user/", user_routes_1.userRouter);
         app.use(handleErrors_1.handleErrors);
         yield (0, db_1.connectDB)();
         server = app.listen(config_1.config.port, () => {

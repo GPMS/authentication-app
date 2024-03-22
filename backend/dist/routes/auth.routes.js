@@ -12,7 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authRoutes = void 0;
+exports.authRouter = void 0;
+const express_1 = require("express");
 const zod_1 = __importDefault(require("zod"));
 const auth_controllers_1 = require("../controllers/auth.controllers");
 const authJWT_1 = require("../middlewares/authJWT");
@@ -33,46 +34,44 @@ function parseAuthBody(body) {
     }
     return authBody.data;
 }
-function authRoutes(app) {
-    app.post("/auth/register", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        console.info("Register");
-        const { email, password } = parseAuthBody(req.body);
-        const token = yield (0, auth_controllers_1.register)(email, password);
-        if (!token) {
-            throw new errors_1.Conflict(`User with email ${email} already exists`);
-        }
-        res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
-        res.status(201).send({
-            accessToken: token,
-        });
-    }));
-    app.post("/auth/login", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        console.info("Login");
-        const { email, password } = parseAuthBody(req.body);
-        const token = yield (0, auth_controllers_1.login)(email, password);
-        if (!token) {
-            throw new errors_1.Forbidden("Invalid email or password");
-        }
-        res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
-        res.send({
-            accessToken: token,
-        });
-    }));
-    app.post("/auth/logout", authJWT_1.verifyToken, (_, res) => {
-        res.clearCookie(auth_controllers_1.COOKIE_NAME);
-        res.send();
+exports.authRouter = (0, express_1.Router)();
+exports.authRouter.post("register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.info("Register");
+    const { email, password } = parseAuthBody(req.body);
+    const token = yield (0, auth_controllers_1.register)(email, password);
+    if (!token) {
+        throw new errors_1.Conflict(`User with email ${email} already exists`);
+    }
+    res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
+    res.status(201).send({
+        accessToken: token,
     });
-    app.get("/auth/github", (_, res) => {
-        const redirectUrl = new URL(`https://github.com/login/oauth/authorize?client_id=${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientId}`);
-        res.send({ url: redirectUrl });
+}));
+exports.authRouter.post("login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.info("Login");
+    const { email, password } = parseAuthBody(req.body);
+    const token = yield (0, auth_controllers_1.login)(email, password);
+    if (!token) {
+        throw new errors_1.Forbidden("Invalid email or password");
+    }
+    res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
+    res.send({
+        accessToken: token,
     });
-    app.get("/auth/github/callback", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const code = req.query.code;
-        if (!code) {
-            throw new errors_1.BadRequest("Error during GitHub authentication");
-        }
-        const token = yield (0, github_controllers_1.githubOauth)(code);
-        res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user?token=${token}`);
-    }));
-}
-exports.authRoutes = authRoutes;
+}));
+exports.authRouter.post("logout", authJWT_1.verifyToken, (_, res) => {
+    res.clearCookie(auth_controllers_1.COOKIE_NAME);
+    res.send();
+});
+exports.authRouter.get("github", (_, res) => {
+    const redirectUrl = new URL(`https://github.com/login/oauth/authorize?client_id=${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientId}`);
+    res.send({ url: redirectUrl });
+});
+exports.authRouter.get("github/callback", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const code = req.query.code;
+    if (!code) {
+        throw new errors_1.BadRequest("Error during GitHub authentication");
+    }
+    const token = yield (0, github_controllers_1.githubOauth)(code);
+    res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user?token=${token}`);
+}));
