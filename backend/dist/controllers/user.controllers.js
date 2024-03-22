@@ -9,25 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserInfo = exports.getUserInfo = void 0;
-const utils_1 = require("../utils");
+exports.userController = void 0;
+const errors_1 = require("../errors");
 const user_1 = require("../database/models/user");
-function getUserInfo(userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let user = yield user_1.User.findById(userId).select({ _id: 0, __v: 0 }).exec();
-        return user;
-    });
-}
-exports.getUserInfo = getUserInfo;
-function updateUserInfo(userId, newUserInfo) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (newUserInfo.password) {
-            newUserInfo.password = yield (0, utils_1.hashPassword)(newUserInfo.password);
+const userService_1 = require("../services/userService");
+exports.userController = {
+    getUserInfo: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.userId) {
+            throw new Error("No user id");
         }
-        const updatedUser = yield user_1.User.findByIdAndUpdate(userId, {
-            $set: newUserInfo,
-        }, { returnDocument: "after" }).exec();
-        return updatedUser != null;
-    });
-}
-exports.updateUserInfo = updateUserInfo;
+        const userInfo = yield userService_1.userService.getUserInfo(req.userId);
+        if (!userInfo) {
+            throw new errors_1.BadRequest(`no user with id ${req.userId}`);
+        }
+        res.send(userInfo);
+    }),
+    updateUserInfo: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("Update");
+        const updateBody = user_1.UserSchema.partial().safeParse(req.body);
+        if (!updateBody.success) {
+            const issues = updateBody.error.issues.map((issue) => issue.message);
+            throw new errors_1.BadRequest(issues.join("; "));
+        }
+        if (!req.userId) {
+            throw new Error("No user id");
+        }
+        if (!(yield userService_1.userService.updateUserInfo(req.userId, updateBody.data))) {
+            throw new errors_1.BadRequest(`no user with id ${req.userId}`);
+        }
+        res.send();
+    }),
+};

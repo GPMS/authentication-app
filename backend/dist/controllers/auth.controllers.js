@@ -8,33 +8,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = exports.COOKIE_NAME = void 0;
-const utils_1 = require("../utils");
-const user_1 = require("../database/models/user");
+exports.authController = exports.COOKIE_NAME = void 0;
+const zod_1 = __importDefault(require("zod"));
+const errors_1 = require("../errors");
+const config_1 = require("../config");
+const authService_1 = require("../services/authService");
+const githubService_1 = require("../services/oauth/githubService");
 exports.COOKIE_NAME = "token";
-function register(email, password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (yield user_1.User.findOne({ email }).exec()) {
-            return null;
+const authSchema = zod_1.default.object({
+    email: zod_1.default.string().email(),
+    password: zod_1.default
+        .string()
+        .min(8, { message: "Password must contain at least 8 characters" }),
+});
+function parseAuthBody(body) {
+    const authBody = authSchema.safeParse(body);
+    if (!authBody.success) {
+        const issues = authBody.error.issues.map((issue) => issue.message);
+        throw new errors_1.BadRequest(issues.join("; "));
+    }
+    return authBody.data;
+}
+const githubService = new githubService_1.GithubService();
+exports.authController = {
+    register: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        console.info("Register");
+        const { email, password } = parseAuthBody(req.body);
+        const token = yield authService_1.authService.register(email, password);
+        if (!token) {
+            throw new errors_1.Conflict(`User with email ${email} already exists`);
         }
-        const hashedPassword = yield (0, utils_1.hashPassword)(password);
-        const createdUser = yield user_1.User.create({
-            email,
-            password: hashedPassword,
-            provider: "local",
+        res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
+        res.status(201).send({
+            accessToken: token,
         });
-        return (0, utils_1.generateToken)(createdUser.id);
-    });
-}
-exports.register = register;
-function login(email, password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const user = yield user_1.User.findOne({ email }).select("+password").exec();
-        if (!user || !(yield (0, utils_1.verifyPassword)(password, user.password))) {
-            return null;
+    }),
+    login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        console.info("Login");
+        const { email, password } = parseAuthBody(req.body);
+        const token = yield authService_1.authService.login(email, password);
+        if (!token) {
+            throw new errors_1.Forbidden("Invalid email or password");
         }
-        return (0, utils_1.generateToken)(user.id);
-    });
-}
-exports.login = login;
+        res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
+        res.send({
+            accessToken: token,
+        });
+    }),
+    logout: (_, res) => {
+        res.clearCookie(exports.COOKIE_NAME);
+        res.send();
+    },
+    getGithubUrl: (_, res) => {
+        const redirectUrl = githubService.generateUrl();
+        res.send({ url: redirectUrl });
+    },
+    githubCallback: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const code = req.query.code;
+        if (!code) {
+            throw new errors_1.BadRequest("Error during GitHub authentication");
+        }
+        const token = yield authService_1.authService.loginWithService(code, githubService);
+        res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user?token=${token}`);
+    }),
+};

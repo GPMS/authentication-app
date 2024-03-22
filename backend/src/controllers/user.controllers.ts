@@ -1,24 +1,33 @@
-import { generateToken, hashPassword } from "../utils";
-import { User, TUser } from "../database/models/user";
+import { Request, Response } from "express";
 
-export async function getUserInfo(userId: string) {
-  let user = await User.findById(userId).select({ _id: 0, __v: 0 }).exec();
-  return user;
-}
+import { BadRequest } from "../errors";
+import { UserSchema } from "../database/models/user";
+import { userService } from "../services/userService";
 
-export async function updateUserInfo(
-  userId: string,
-  newUserInfo: Partial<TUser>
-) {
-  if (newUserInfo.password) {
-    newUserInfo.password = await hashPassword(newUserInfo.password);
-  }
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    {
-      $set: newUserInfo,
-    },
-    { returnDocument: "after" }
-  ).exec();
-  return updatedUser != null;
-}
+export const userController = {
+  getUserInfo: async (req: Request, res: Response) => {
+    if (!req.userId) {
+      throw new Error("No user id");
+    }
+    const userInfo = await userService.getUserInfo(req.userId);
+    if (!userInfo) {
+      throw new BadRequest(`no user with id ${req.userId}`);
+    }
+    res.send(userInfo);
+  },
+  updateUserInfo: async (req: Request, res: Response) => {
+    console.log("Update");
+    const updateBody = UserSchema.partial().safeParse(req.body);
+    if (!updateBody.success) {
+      const issues = updateBody.error.issues.map((issue) => issue.message);
+      throw new BadRequest(issues.join("; "));
+    }
+    if (!req.userId) {
+      throw new Error("No user id");
+    }
+    if (!(await userService.updateUserInfo(req.userId, updateBody.data))) {
+      throw new BadRequest(`no user with id ${req.userId}`);
+    }
+    res.send();
+  },
+};
