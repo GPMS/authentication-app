@@ -4,13 +4,12 @@ exports.authController = exports.COOKIE_NAME = void 0;
 const errors_1 = require("../../errors");
 const config_1 = require("../../config");
 const service_1 = require("./service");
-const githubService_1 = require("./githubService");
+const githubProvider_1 = require("./githubProvider");
 const validateAuthDTO_1 = require("./validateAuthDTO");
 exports.COOKIE_NAME = "token";
-const githubService = new githubService_1.GithubService();
+const githubProvider = new githubProvider_1.GithubProvider();
 exports.authController = {
     register: async (req, res) => {
-        console.info("Register");
         const { email, password } = (0, validateAuthDTO_1.validateAuthDTO)(req.body);
         const token = await service_1.authService.register(email, password);
         if (!token) {
@@ -38,7 +37,7 @@ exports.authController = {
         res.send();
     },
     getGithubUrl: (_, res) => {
-        const redirectUrl = githubService.generateUrl();
+        const redirectUrl = githubProvider.generateUrl();
         res.send({ url: redirectUrl });
     },
     githubCallback: async (req, res) => {
@@ -46,7 +45,7 @@ exports.authController = {
         if (!code) {
             throw new errors_1.BadRequest("Error during GitHub authentication");
         }
-        const token = await service_1.authService.loginWithService(code, githubService);
+        const token = await service_1.authService.loginWithService(code, githubProvider);
         res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);
     },
 };

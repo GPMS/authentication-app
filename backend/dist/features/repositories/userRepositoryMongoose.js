@@ -7,7 +7,7 @@ class UserRepositoryMongoose {
     findByEmailWithPassword(email) {
         return user_1.UserModel.findOne({ email }).select("+password").exec();
     }
-    findByEmail(email, withPassword = false) {
+    findByEmail(email) {
         return user_1.UserModel.findOne({ email }).exec();
     }
     findById(id) {

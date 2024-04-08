@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GithubService = void 0;
+exports.GithubProvider = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../../config");
-class GithubService {
+class GithubProvider {
     generateUrl() {
         return new URL(`https://github.com/login/oauth/authorize?client_id=${config_1.config.github.clientId}`);
     }
@@ -31,4 +31,4 @@ class GithubService {
         return userResponse.data;
     }
 }
-exports.GithubService = GithubService;
+exports.GithubProvider = GithubProvider;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "../../config";
 
-export class GithubService {
+export class GithubProvider {
   generateUrl() {
     return new URL(
       `https://github.com/login/oauth/authorize?client_id=${config.github.clientId}`

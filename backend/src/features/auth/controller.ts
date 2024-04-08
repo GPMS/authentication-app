@@ -3,18 +3,16 @@ import { Request, Response } from "express";
 import { BadRequest, Forbidden, Conflict } from "../../errors";
 import { config } from "../../config";
 import { authService } from "./service";
-import { GithubService } from "./githubService";
+import { GithubProvider } from "./githubProvider";
 import { validateAuthDTO } from "./validateAuthDTO";
 
 export const COOKIE_NAME = "token";
 
-
-const githubService = new GithubService();
+const githubProvider = new GithubProvider();
 
 export const authController = {
   register: async (req: Request, res: Response) => {
-    console.info("Register");
-      const { email, password } = validateAuthDTO(req.body);
+    const { email, password } = validateAuthDTO(req.body);
     const token = await authService.register(email, password);
     if (!token) {
       throw new Conflict(`User with email ${email} already exists`);
@@ -26,7 +24,7 @@ export const authController = {
   },
   login: async (req: Request, res: Response) => {
     console.info("Login");
-      const { email, password } = validateAuthDTO(req.body);
+    const { email, password } = validateAuthDTO(req.body);
     const token = await authService.login(email, password);
     if (!token) {
       throw new Forbidden("Invalid email or password");
@@ -41,7 +39,7 @@ export const authController = {
     res.send();
   },
   getGithubUrl: (_: Request, res: Response) => {
-    const redirectUrl = githubService.generateUrl();
+    const redirectUrl = githubProvider.generateUrl();
     res.send({ url: redirectUrl });
   },
   githubCallback: async (req: Request, res: Response) => {
@@ -50,7 +48,7 @@ export const authController = {
     if (!code) {
       throw new BadRequest("Error during GitHub authentication");
     }
-    const token = await authService.loginWithService(code, githubService);
+    const token = await authService.loginWithService(code, githubProvider);
     res.redirect(`${config.frontendUrl}/user?token=${token}`);
   },
 };

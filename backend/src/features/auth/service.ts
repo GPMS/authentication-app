@@ -1,6 +1,6 @@
 import { hashPassword, verifyPassword, generateToken } from "../../utils";
 import { User } from "../models/user";
-import { GithubService } from "./githubService";
+import { GithubProvider } from "./githubProvider";
 
 export const authService = {
   register: async (email: string, password: string) => {
@@ -22,14 +22,14 @@ export const authService = {
     }
     return generateToken(user.id);
   },
-  loginWithService: async (code: string, oauthService: GithubService) => {
-    const accessToken = await oauthService.getAccessToken(code);
+  loginWithService: async (code: string, oauthProvider: GithubProvider) => {
+    const accessToken = await oauthProvider.getAccessToken(code);
     const {
       name,
       email,
       avatar_url: photo,
       bio,
-    } = await oauthService.getUserInfo(accessToken);
+    } = await oauthProvider.getUserInfo(accessToken);
 
     // Create new user if it doesn't already exist
     let user = await User.findOne({ email }).exec();
