@@ -1,72 +1,11 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import "express-async-errors";
-
+import { connectDB } from "./database/connection";
+import { app } from "./app";
 import { config } from "./config";
-import { authRouter } from "./routes/auth.routes";
-import { userRouter } from "./routes/user.routes";
-import { connectDB, disconnectDB } from "./database/connection";
-import { handleErrors } from "./middlewares/handleErrors";
-import { Server } from "http";
-
-let server: Server | null = null;
-
-let shuttingDown = false;
-
-function cleanup() {
-  if (!server) return;
-  shuttingDown = true;
-  server.close(async () => {
-    await disconnectDB();
-    process.exit();
-  });
-
-  setTimeout(() => {
-    console.error(
-      "ERROR: Could not close connections in time, forcing shut down"
-    );
-    process.exit(1);
-  }, 30 * 1000);
-}
 
 async function start() {
-  console.info("INFO: Starting Express.js application");
-
-  const app = express();
-
-  app.use(
-    cors({
-      origin: config.frontendUrl,
-      credentials: true,
-    })
-  );
-  app.use(express.json());
-  app.use(cookieParser());
-
-  app.use((_, res, next) => {
-    if (!shuttingDown) return next();
-
-    res.setHeader("Connection", "close");
-    res.status(503).send("Server is in the process of shutting down");
-  });
-
-  app.get("/", (req, res) => {
-    res.send({ message: "Welcome to my app" });
-  });
-
-  app.use("/auth", authRouter);
-  app.use("/user", userRouter);
-
-  app.use(handleErrors);
-
   await connectDB();
-  server = app.listen(config.port, () => {
+  app.listen(config.port, () => {
     console.info(`INFO: Listening on port ${config!.port}...`);
   });
-
-  process.on("SIGINT", cleanup);
-  process.on("SIGTERM", cleanup);
 }
-
 start();

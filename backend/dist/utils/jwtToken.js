@@ -11,17 +11,11 @@ const jwtPayloadSchema = zod_1.default.object({
     id: zod_1.default.string(),
 });
 function generateToken(id) {
-    if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
-        throw Error("Set ACCESS TOKEN SECRET environmental variable");
-    }
     return jsonwebtoken_1.default.sign({ id }, config_1.config.jwtAccessTokenSecret);
 }
 exports.generateToken = generateToken;
 function verifyJwt(token) {
     return new Promise((resolve, reject) => {
-        if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.jwtAccessTokenSecret)) {
-            throw Error("Set ACCESS TOKEN SECRET environmental variable");
-        }
         jsonwebtoken_1.default.verify(token, config_1.config.jwtAccessTokenSecret, (err, payload) => {
             if (err) {
                 reject(err);

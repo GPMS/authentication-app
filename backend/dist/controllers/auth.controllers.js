@@ -73,6 +73,6 @@ exports.authController = {
             throw new errors_1.BadRequest("Error during GitHub authentication");
         }
         const token = yield authService_1.authService.loginWithService(code, githubService);
-        res.redirect(`${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.frontendUrl}/user?token=${token}`);
+        res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);
     }),
 };

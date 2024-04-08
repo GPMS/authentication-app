@@ -17,13 +17,13 @@ const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../../config");
 class GithubService {
     generateUrl() {
-        return new URL(`https://github.com/login/oauth/authorize?client_id=${config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientId}`);
+        return new URL(`https://github.com/login/oauth/authorize?client_id=${config_1.config.github.clientId}`);
     }
     getAccessToken(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data } = yield axios_1.default.post("https://github.com/login/oauth/access_token", {
-                client_id: config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientId,
-                client_secret: config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.github.clientSecret,
+                client_id: config_1.config.github.clientId,
+                client_secret: config_1.config.github.clientSecret,
                 code: code,
             }, {
                 headers: {

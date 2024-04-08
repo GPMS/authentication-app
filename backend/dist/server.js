@@ -8,65 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
-require("express-async-errors");
-const config_1 = require("./config");
-const auth_routes_1 = require("./routes/auth.routes");
-const user_routes_1 = require("./routes/user.routes");
 const connection_1 = require("./database/connection");
-const handleErrors_1 = require("./middlewares/handleErrors");
-let server = null;
-let shuttingDown = false;
-function cleanup() {
-    if (!server)
-        return;
-    shuttingDown = true;
-    server.close(() => __awaiter(this, void 0, void 0, function* () {
-        yield (0, connection_1.disconnectDB)();
-        process.exit();
-    }));
-    setTimeout(() => {
-        console.error("ERROR: Could not close connections in time, forcing shut down");
-        process.exit(1);
-    }, 30 * 1000);
-}
+const app_1 = require("./app");
+const config_1 = require("./config");
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.info("INFO: Starting Express.js application");
-        (0, config_1.loadConfig)();
-        if (!config_1.config)
-            return;
-        const app = (0, express_1.default)();
-        app.use((0, cors_1.default)({
-            origin: config_1.config.frontendUrl,
-            credentials: true,
-        }));
-        app.use(express_1.default.json());
-        app.use((0, cookie_parser_1.default)());
-        app.use((_, res, next) => {
-            if (!shuttingDown)
-                return next();
-            res.setHeader("Connection", "close");
-            res.status(503).send("Server is in the process of shutting down");
-        });
-        app.get("/", (req, res) => {
-            res.send({ message: "Welcome to my app" });
-        });
-        app.use("/auth", auth_routes_1.authRouter);
-        app.use("/user", user_routes_1.userRouter);
-        app.use(handleErrors_1.handleErrors);
         yield (0, connection_1.connectDB)();
-        server = app.listen(config_1.config.port, () => {
+        app_1.app.listen(config_1.config.port, () => {
             console.info(`INFO: Listening on port ${config_1.config.port}...`);
         });
-        process.on("SIGINT", cleanup);
-        process.on("SIGTERM", cleanup);
     });
 }
 start();

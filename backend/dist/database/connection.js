@@ -18,9 +18,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 function connectDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (!(config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.databaseURL)) {
-                throw new Error("Set DATABASE_URL environmental variable");
-            }
             console.info("INFO: DB: Trying to connect to", config_1.config.databaseURL);
             yield mongoose_1.default.connect(config_1.config.databaseURL);
             console.info("INFO: DB: Successfully connected.");
