@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authService = void 0;
+exports.AuthService = void 0;
 const utils_1 = require("../../utils");
 const user_1 = require("../models/user");
-exports.authService = {
-    register: async (email, password) => {
+class AuthService {
+    constructor() { }
+    async register(email, password) {
         if (await user_1.UserModel.findOne({ email }).exec()) {
             return null;
         }
@@ -15,15 +16,18 @@ exports.authService = {
             provider: "local",
         });
         return (0, utils_1.generateToken)(createdUser.id);
-    },
-    login: async (email, password) => {
+    }
+    async login(email, password) {
         const user = await user_1.UserModel.findOne({ email }).select("+password").exec();
-        if (!user || !(await (0, utils_1.verifyPassword)(password, user.password))) {
+        if (!user || typeof user.password === "undefined") {
+            return null;
+        }
+        if (!(await (0, utils_1.verifyPassword)(password, user.password))) {
             return null;
         }
         return (0, utils_1.generateToken)(user.id);
-    },
-    loginWithService: async (code, oauthProvider) => {
+    }
+    async loginWithService(code, oauthProvider) {
         const accessToken = await oauthProvider.getAccessToken(code);
         const { name, email, avatar_url: photo, bio, } = await oauthProvider.getUserInfo(accessToken);
         // Create new user if it doesn't already exist
@@ -39,5 +43,6 @@ exports.authService = {
             console.info(`GitHub Oauth: Created new user`);
         }
         return (0, utils_1.generateToken)(user.id);
-    },
-};
+    }
+}
+exports.AuthService = AuthService;

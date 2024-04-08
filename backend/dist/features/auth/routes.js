@@ -4,9 +4,24 @@ exports.authRouter = void 0;
 const express_1 = require("express");
 const controller_1 = require("./controller");
 const verifyToken_1 = require("../../middlewares/verifyToken");
+const service_1 = require("./service");
+const githubProvider_1 = require("./githubProvider");
 exports.authRouter = (0, express_1.Router)();
-exports.authRouter.post("/register", controller_1.authController.register);
-exports.authRouter.post("/login", controller_1.authController.login);
-exports.authRouter.post("/logout", verifyToken_1.verifyToken, controller_1.authController.logout);
-exports.authRouter.get("/github", controller_1.authController.getGithubUrl);
-exports.authRouter.get("/github/callback", controller_1.authController.githubCallback);
+function factory() {
+    return new controller_1.AuthController(new service_1.AuthService(), new githubProvider_1.GithubProvider());
+}
+exports.authRouter.post("/register", (req, res, next) => {
+    factory().register(req, res, next);
+});
+exports.authRouter.post("/login", (req, res, next) => {
+    factory().login(req, res, next);
+});
+exports.authRouter.post("/logout", verifyToken_1.verifyToken, (req, res, next) => {
+    factory().logout(req, res, next);
+});
+exports.authRouter.get("/github", (req, res, next) => {
+    factory().getGithubUrl(req, res, next);
+});
+exports.authRouter.get("/github/callback", (req, res, next) => {
+    factory().githubCallback(req, res, next);
+});

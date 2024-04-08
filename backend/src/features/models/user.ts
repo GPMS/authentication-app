@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export type TUser = {
+export type User = {
   id: string;
   email: string;
   name?: string;
@@ -11,11 +11,11 @@ export type TUser = {
   password?: string;
 };
 
-function isProviderLocal(this: TUser) {
+function isProviderLocal(this: User) {
   return this.provider === "local";
 }
 
-const userSchema = new mongoose.Schema<TUser>({
+const userSchema = new mongoose.Schema<User>({
   email: {
     type: String,
     required: true,
@@ -37,4 +37,4 @@ const userSchema = new mongoose.Schema<TUser>({
   },
 });
 
-export const User = mongoose.model<TUser>("User", userSchema);
+export const UserModel = mongoose.model<User>("User", userSchema);

@@ -1,23 +1,18 @@
 import { hashPassword, verifyPassword, generateToken } from "../../utils";
-import { User } from "../models/user";
+import { UserModel } from "../models/user";
 import { GithubProvider } from "./githubProvider";
 
-export const authService = {
-  register: async (email: string, password: string) => {
-    if (await User.findOne({ email }).exec()) {
+    if (await UserModel.findOne({ email }).exec()) {
       return null;
     }
     const hashedPassword = await hashPassword(password);
-    const createdUser = await User.create({
+    const createdUser = await UserModel.create({
       email,
       password: hashedPassword,
       provider: "local",
     });
     return generateToken(createdUser.id);
-  },
-  login: async (email: string, password: string) => {
-    const user = await User.findOne({ email }).select("+password").exec();
-    if (!user || !(await verifyPassword(password, user.password))) {
+    const user = await UserModel.findOne({ email }).select("+password").exec();
       return null;
     }
     return generateToken(user.id);
@@ -32,9 +27,15 @@ export const authService = {
     } = await oauthProvider.getUserInfo(accessToken);
 
     // Create new user if it doesn't already exist
-    let user = await User.findOne({ email }).exec();
+    let user = await UserModel.findOne({ email }).exec();
     if (!user) {
-      user = await User.create({ email, provider: "github", name, photo, bio });
+      user = await UserModel.create({
+        email,
+        provider: "github",
+        name,
+        photo,
+        bio,
+      });
       console.info(`GitHub Oauth: Created new user`);
     }
 
