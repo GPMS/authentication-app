@@ -1,9 +1,18 @@
 import { Router } from "express";
 
 import { verifyToken } from "../../middlewares/verifyToken";
-import { userController } from "./controller";
+import { UserController } from "./controller";
+import { UserService } from "./service";
 
 export const userRouter = Router();
 
-userRouter.get("/", verifyToken, userController.getUserInfo);
-userRouter.put("/", verifyToken, userController.updateUserInfo);
+function factory() {
+  return new UserController(new UserService());
+}
+
+userRouter.get("/", verifyToken, (req, res, next) => {
+  factory().getUserInfo(req, res, next);
+});
+userRouter.put("/", verifyToken, (req, res, next) => {
+  factory().updateUserInfo(req, res, next);
+});
