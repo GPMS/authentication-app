@@ -1,6 +1,6 @@
-import { hashPassword, verifyPassword, generateToken } from "../utils";
-import { User } from "../database/models/user";
-import { OauthService } from "./oauth/oauthService";
+import { hashPassword, verifyPassword, generateToken } from "../../utils";
+import { User } from "../models/user";
+import { GithubService } from "./githubService";
 
 export const authService = {
   register: async (email: string, password: string) => {
@@ -22,7 +22,7 @@ export const authService = {
     }
     return generateToken(user.id);
   },
-  loginWithService: async (code: string, oauthService: OauthService) => {
+  loginWithService: async (code: string, oauthService: GithubService) => {
     const accessToken = await oauthService.getAccessToken(code);
     const {
       name,

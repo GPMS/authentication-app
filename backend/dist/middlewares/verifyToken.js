@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const utils_1 = require("../utils");
-const auth_controllers_1 = require("../controllers/auth.controllers");
+const controller_1 = require("../features/auth/controller");
 const errors_1 = require("../errors");
 function verifyToken(req, res, next) {
     var _a;
@@ -24,11 +24,11 @@ function verifyToken(req, res, next) {
         let token;
         token = (_a = req.headers["authorization"]) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
         if (token) {
-            res.cookie(auth_controllers_1.COOKIE_NAME, token, { httpOnly: true });
+            res.cookie(controller_1.COOKIE_NAME, token, { httpOnly: true });
         }
         else {
             // Failed so try to get token from cookie
-            token = req.cookies[auth_controllers_1.COOKIE_NAME];
+            token = req.cookies[controller_1.COOKIE_NAME];
             // If failed yet again throw error
             if (!token)
                 throw new errors_1.BadRequest("No token provided");

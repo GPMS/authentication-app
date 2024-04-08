@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = void 0;
-const utils_1 = require("../utils");
-const user_1 = require("../database/models/user");
+const utils_1 = require("../../utils");
+const user_1 = require("../models/user");
 exports.authService = {
     register: (email, password) => __awaiter(void 0, void 0, void 0, function* () {
         if (yield user_1.User.findOne({ email }).exec()) {

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import z from "zod";
 
-import { BadRequest, Forbidden, Conflict } from "../errors";
-import { config } from "../config";
-import { authService } from "../services/authService";
-import { GithubService } from "../services/oauth/githubService";
+import { BadRequest, Forbidden, Conflict } from "../../errors";
+import { config } from "../../config";
+import { authService } from "./service";
+import { GithubService } from "./githubService";
 
 export const COOKIE_NAME = "token";
 

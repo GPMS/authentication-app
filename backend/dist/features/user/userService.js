@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userService = void 0;
-const utils_1 = require("../utils");
-const user_1 = require("../database/models/user");
+const utils_1 = require("../../utils");
+const user_1 = require("../models/user");
 exports.userService = {
     getUserInfo: (userId) => __awaiter(void 0, void 0, void 0, function* () {
         let user = yield user_1.User.findById(userId).select({ _id: 0, __v: 0 }).exec();

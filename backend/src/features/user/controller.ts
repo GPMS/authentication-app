@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { BadRequest } from "../errors";
-import { UserSchema } from "../database/models/user";
-import { userService } from "../services/userService";
+import { BadRequest } from "../../errors";
+import { UserSchema } from "../models/user";
+import { userService } from "./userService";
 
 export const userController = {
   getUserInfo: async (req: Request, res: Response) => {

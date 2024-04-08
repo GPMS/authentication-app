@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { verifyToken } from "../middlewares/authJWT";
-import { userController } from "../controllers/user.controllers";
+import { verifyToken } from "../../middlewares/verifyToken";
+import { userController } from "./controller";
 
 export const userRouter = Router();
 

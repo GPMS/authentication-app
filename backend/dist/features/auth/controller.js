@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = exports.COOKIE_NAME = void 0;
 const zod_1 = __importDefault(require("zod"));
-const errors_1 = require("../errors");
-const config_1 = require("../config");
-const authService_1 = require("../services/authService");
-const githubService_1 = require("../services/oauth/githubService");
+const errors_1 = require("../../errors");
+const config_1 = require("../../config");
+const service_1 = require("./service");
+const githubService_1 = require("./githubService");
 exports.COOKIE_NAME = "token";
 const authSchema = zod_1.default.object({
     email: zod_1.default.string().email(),
@@ -38,7 +38,7 @@ exports.authController = {
     register: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.info("Register");
         const { email, password } = parseAuthBody(req.body);
-        const token = yield authService_1.authService.register(email, password);
+        const token = yield service_1.authService.register(email, password);
         if (!token) {
             throw new errors_1.Conflict(`User with email ${email} already exists`);
         }
@@ -50,7 +50,7 @@ exports.authController = {
     login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.info("Login");
         const { email, password } = parseAuthBody(req.body);
-        const token = yield authService_1.authService.login(email, password);
+        const token = yield service_1.authService.login(email, password);
         if (!token) {
             throw new errors_1.Forbidden("Invalid email or password");
         }
@@ -72,7 +72,7 @@ exports.authController = {
         if (!code) {
             throw new errors_1.BadRequest("Error during GitHub authentication");
         }
-        const token = yield authService_1.authService.loginWithService(code, githubService);
+        const token = yield service_1.authService.loginWithService(code, githubService);
         res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);
     }),
 };

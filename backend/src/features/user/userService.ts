@@ -1,5 +1,5 @@
-import { hashPassword } from "../utils";
-import { User, TUser } from "../database/models/user";
+import { hashPassword } from "../../utils";
+import { User, TUser } from "../models/user";
 
 export const userService = {
   getUserInfo: async (userId: string) => {

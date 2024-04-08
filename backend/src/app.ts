@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import "express-async-errors";
 
 import { config } from "./config";
-import { authRouter } from "./routes/auth.routes";
-import { userRouter } from "./routes/user.routes";
+import { authRouter } from "./features/auth/routes";
+import { userRouter } from "./features/user/routes";
 import { handleErrors } from "./middlewares/handleErrors";
 
 console.info("INFO: Starting Express.js application");

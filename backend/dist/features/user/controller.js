@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
-const errors_1 = require("../errors");
-const user_1 = require("../database/models/user");
-const userService_1 = require("../services/userService");
+const errors_1 = require("../../errors");
+const user_1 = require("../models/user");
+const userService_1 = require("./userService");
 exports.userController = {
     getUserInfo: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.userId) {
