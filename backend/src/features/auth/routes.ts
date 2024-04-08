@@ -4,11 +4,15 @@ import { AuthController } from "./controller";
 import { verifyToken } from "../../middlewares/verifyToken";
 import { AuthService } from "./service";
 import { GithubProvider } from "./githubProvider";
+import { UserRepositoryMongoose } from "../../repositories/userRepositoryMongoose";
 
 export const authRouter = Router();
 
 function factory() {
-  return new AuthController(new AuthService(), new GithubProvider());
+  return new AuthController(
+    new AuthService(new UserRepositoryMongoose()),
+    new GithubProvider()
+  );
 }
 
 authRouter.post("/register", (req, res, next) => {

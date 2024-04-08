@@ -6,9 +6,10 @@ const controller_1 = require("./controller");
 const verifyToken_1 = require("../../middlewares/verifyToken");
 const service_1 = require("./service");
 const githubProvider_1 = require("./githubProvider");
+const userRepositoryMongoose_1 = require("../../repositories/userRepositoryMongoose");
 exports.authRouter = (0, express_1.Router)();
 function factory() {
-    return new controller_1.AuthController(new service_1.AuthService(), new githubProvider_1.GithubProvider());
+    return new controller_1.AuthController(new service_1.AuthService(new userRepositoryMongoose_1.UserRepositoryMongoose()), new githubProvider_1.GithubProvider());
 }
 exports.authRouter.post("/register", (req, res, next) => {
     factory().register(req, res, next);

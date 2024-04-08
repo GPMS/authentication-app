@@ -11,6 +11,8 @@ export type User = {
   password?: string;
 };
 
+export type UserWithoutPassword = Omit<User, "password">;
+
 function isProviderLocal(this: User) {
   return this.provider === "local";
 }
@@ -37,4 +39,4 @@ const userSchema = new mongoose.Schema<User>({
   },
 });
 
-export const UserModel = mongoose.model<User>("User", userSchema);
+export const userModel = mongoose.model<User>("User", userSchema);

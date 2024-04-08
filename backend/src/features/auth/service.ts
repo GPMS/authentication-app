@@ -1,16 +1,16 @@
 import { hashPassword, verifyPassword, generateToken } from "../../utils";
-import { UserModel } from "../models/user";
+import { UserRepository } from "../../repositories/userRepository";
 import { GithubProvider } from "./githubProvider";
 
 export class AuthService {
-  constructor() {}
+  constructor(private userRepository: UserRepository) {}
 
   async register(email: string, password: string) {
-    if (await UserModel.findOne({ email }).exec()) {
+    if (await this.userRepository.findByEmail(email)) {
       return null;
     }
     const hashedPassword = await hashPassword(password);
-    const createdUser = await UserModel.create({
+    const createdUser = await this.userRepository.create({
       email,
       password: hashedPassword,
       provider: "local",
@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await UserModel.findOne({ email }).select("+password").exec();
+    const user = await this.userRepository.findByEmailWithPassword(email);
     if (!user || typeof user.password === "undefined") {
       return null;
     }
@@ -39,9 +39,9 @@ export class AuthService {
     } = await oauthProvider.getUserInfo(accessToken);
 
     // Create new user if it doesn't already exist
-    let user = await UserModel.findOne({ email }).exec();
+    let user = await this.userRepository.findByEmail(email);
     if (!user) {
-      user = await UserModel.create({
+      user = await this.userRepository.create({
         email,
         provider: "github",
         name,
