@@ -12,6 +12,11 @@
     "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -36,6 +41,7 @@
     "@types/node": "^20.11.24",
     "@typescript-eslint/parser": "^7.1.1",
     "nodemon": "^3.0.1",
+    "pre-commit": "^1.2.2",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
