@@ -1,38 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.userController = void 0;
 const errors_1 = require("../../errors");
+const userService_1 = require("./userService");
 const validateUpdateUserDTO_1 = require("./validateUpdateUserDTO");
-class UserController {
-    userService;
-    constructor(userService) {
-        this.userService = userService;
-    }
-    async getUserInfo(req, res, next) {
+exports.userController = {
+    getUserInfo: async (req, res) => {
         if (!req.userId) {
             throw new Error("No user id");
         }
-        const userInfo = await this.userService.getUserInfo(req.userId);
+        const userInfo = await userService_1.userService.getUserInfo(req.userId);
         if (!userInfo) {
             throw new errors_1.BadRequest(`no user with id ${req.userId}`);
         }
         res.send(userInfo);
-    }
-    async updateUserInfo(req, res, next) {
-        try {
-            console.log("Update");
-            if (!req.userId) {
-                throw new Error("No user id");
-            }
-            const updateBody = (0, validateUpdateUserDTO_1.validateUpdateUserDTO)(req.body);
-            if (!(await this.userService.updateUserInfo(req.userId, updateBody))) {
-                throw new errors_1.BadRequest(`no user with id ${req.userId}`);
-            }
-            res.send();
+    },
+    updateUserInfo: async (req, res) => {
+        console.log("Update");
+        if (!req.userId) {
+            throw new Error("No user id");
         }
-        catch (e) {
-            next(e);
+        const updateBody = (0, validateUpdateUserDTO_1.validateUpdateUserDTO)(req.body);
+        if (!userService_1.userService.updateUserInfo(req.userId, updateBody)) {
+            throw new errors_1.BadRequest(`no user with id ${req.userId}`);
         }
-    }
-}
-exports.UserController = UserController;
+        res.send();
+    },
+};

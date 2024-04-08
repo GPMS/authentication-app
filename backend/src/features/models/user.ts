@@ -1,19 +1,15 @@
 import mongoose from "mongoose";
-import z from "zod";
 
-export const UserSchema = z.object({
-  email: z.string().email().min(1, { message: "Email cannot be blank" }),
-  photo: z.string().url().or(z.literal("")),
-  name: z.string(),
-  bio: z.string(),
-  phone: z.string(),
-  provider: z.union([z.literal("local"), z.literal("github")]),
-  password: z
-    .string()
-    .min(8, { message: "Password must have at least 8 characters" }),
-});
-
-export type TUser = z.infer<typeof UserSchema>;
+export type TUser = {
+  id: string;
+  email: string;
+  name?: string;
+  photo?: string;
+  bio?: string;
+  phone?: string;
+  provider: "local" | "github";
+  password?: string;
+};
 
 function isProviderLocal(this: TUser) {
   return this.provider === "local";

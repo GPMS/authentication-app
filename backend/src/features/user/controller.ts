@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { BadRequest } from "../../errors";
-import { UserSchema } from "../models/user";
 import { userService } from "./userService";
+import { validateUpdateUserDTO } from "./validateUpdateUserDTO";
 
 export const userController = {
   getUserInfo: async (req: Request, res: Response) => {
@@ -17,15 +17,11 @@ export const userController = {
   },
   updateUserInfo: async (req: Request, res: Response) => {
     console.log("Update");
-    const updateBody = UserSchema.partial().safeParse(req.body);
-    if (!updateBody.success) {
-      const issues = updateBody.error.issues.map((issue) => issue.message);
-      throw new BadRequest(issues.join("; "));
-    }
     if (!req.userId) {
       throw new Error("No user id");
     }
-    if (!(await userService.updateUserInfo(req.userId, updateBody.data))) {
+    const updateBody = validateUpdateUserDTO(req.body);
+    if (!userService.updateUserInfo(req.userId, updateBody)) {
       throw new BadRequest(`no user with id ${req.userId}`);
     }
     res.send();
