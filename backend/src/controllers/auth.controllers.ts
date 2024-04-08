@@ -66,6 +66,6 @@ export const authController = {
       throw new BadRequest("Error during GitHub authentication");
     }
     const token = await authService.loginWithService(code, githubService);
-    res.redirect(`${config?.frontendUrl}/user?token=${token}`);
+    res.redirect(`${config.frontendUrl}/user?token=${token}`);
   },
 };

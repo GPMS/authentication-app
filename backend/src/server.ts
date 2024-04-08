@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "express-async-errors";
 
-import { config, loadConfig } from "./config";
+import { config } from "./config";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
 import { connectDB, disconnectDB } from "./database/connection";
@@ -32,9 +32,6 @@ function cleanup() {
 
 async function start() {
   console.info("INFO: Starting Express.js application");
-
-  loadConfig();
-  if (!config) return;
 
   const app = express();
 

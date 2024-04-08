@@ -8,17 +8,11 @@ const jwtPayloadSchema = z.object({
 export type JwtPayload = z.infer<typeof jwtPayloadSchema>;
 
 export function generateToken(id: string) {
-  if (!config?.jwtAccessTokenSecret) {
-    throw Error("Set ACCESS TOKEN SECRET environmental variable");
-  }
   return jwt.sign({ id }, config.jwtAccessTokenSecret);
 }
 
 export function verifyJwt(token: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (!config?.jwtAccessTokenSecret) {
-      throw Error("Set ACCESS TOKEN SECRET environmental variable");
-    }
     jwt.verify(token, config.jwtAccessTokenSecret, (err, payload) => {
       if (err) {
         reject(err);

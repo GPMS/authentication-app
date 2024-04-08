@@ -6,15 +6,15 @@ import { config } from "../../config";
 export class GithubService implements OauthService {
   generateUrl() {
     return new URL(
-      `https://github.com/login/oauth/authorize?client_id=${config?.github.clientId}`
+      `https://github.com/login/oauth/authorize?client_id=${config.github.clientId}`
     );
   }
   async getAccessToken(code: string) {
     const { data } = await axios.post(
       "https://github.com/login/oauth/access_token",
       {
-        client_id: config?.github.clientId,
-        client_secret: config?.github.clientSecret,
+        client_id: config.github.clientId,
+        client_secret: config.github.clientSecret,
         code: code,
       },
       {
