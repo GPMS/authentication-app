@@ -1,78 +1,81 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authController = exports.COOKIE_NAME = void 0;
-const zod_1 = __importDefault(require("zod"));
+exports.AuthController = exports.COOKIE_NAME = void 0;
 const errors_1 = require("../../errors");
 const config_1 = require("../../config");
-const service_1 = require("./service");
-const githubService_1 = require("./githubService");
+const validateAuthDTO_1 = require("./validateAuthDTO");
 exports.COOKIE_NAME = "token";
-const authSchema = zod_1.default.object({
-    email: zod_1.default.string().email(),
-    password: zod_1.default
-        .string()
-        .min(8, { message: "Password must contain at least 8 characters" }),
-});
-function parseAuthBody(body) {
-    const authBody = authSchema.safeParse(body);
-    if (!authBody.success) {
-        const issues = authBody.error.issues.map((issue) => issue.message);
-        throw new errors_1.BadRequest(issues.join("; "));
+class AuthController {
+    authService;
+    githubProvider;
+    constructor(authService, githubProvider) {
+        this.authService = authService;
+        this.githubProvider = githubProvider;
     }
-    return authBody.data;
+    async register(req, res, next) {
+        try {
+            console.info("Register");
+            const { email, password } = (0, validateAuthDTO_1.validateAuthDTO)(req.body);
+            const token = await this.authService.register(email, password);
+            if (!token) {
+                throw new errors_1.Conflict(`User with email ${email} already exists`);
+            }
+            res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
+            res.status(201).send({
+                accessToken: token,
+            });
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    async login(req, res, next) {
+        try {
+            console.info("Login");
+            const { email, password } = (0, validateAuthDTO_1.validateAuthDTO)(req.body);
+            const token = await this.authService.login(email, password);
+            if (!token) {
+                throw new errors_1.Forbidden("Invalid email or password");
+            }
+            res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
+            res.send({
+                accessToken: token,
+            });
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    logout(_, res, next) {
+        try {
+            res.clearCookie(exports.COOKIE_NAME);
+            res.send();
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    getGithubUrl(_, res, next) {
+        try {
+            const redirectUrl = this.githubProvider.generateUrl();
+            res.send({ url: redirectUrl });
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    async githubCallback(req, res, next) {
+        try {
+            const code = req.query.code;
+            if (!code) {
+                throw new errors_1.BadRequest("Error during GitHub authentication");
+            }
+            const token = await this.authService.loginWithService(code, this.githubProvider);
+            res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }
-const githubService = new githubService_1.GithubService();
-exports.authController = {
-    register: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        console.info("Register");
-        const { email, password } = parseAuthBody(req.body);
-        const token = yield service_1.authService.register(email, password);
-        if (!token) {
-            throw new errors_1.Conflict(`User with email ${email} already exists`);
-        }
-        res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
-        res.status(201).send({
-            accessToken: token,
-        });
-    }),
-    login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        console.info("Login");
-        const { email, password } = parseAuthBody(req.body);
-        const token = yield service_1.authService.login(email, password);
-        if (!token) {
-            throw new errors_1.Forbidden("Invalid email or password");
-        }
-        res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
-        res.send({
-            accessToken: token,
-        });
-    }),
-    logout: (_, res) => {
-        res.clearCookie(exports.COOKIE_NAME);
-        res.send();
-    },
-    getGithubUrl: (_, res) => {
-        const redirectUrl = githubService.generateUrl();
-        res.send({ url: redirectUrl });
-    },
-    githubCallback: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const code = req.query.code;
-        if (!code) {
-            throw new errors_1.BadRequest("Error during GitHub authentication");
-        }
-        const token = yield service_1.authService.loginWithService(code, githubService);
-        res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);
-    }),
-};
+exports.AuthController = AuthController;

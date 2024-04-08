@@ -2,7 +2,6 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -22,7 +21,7 @@ exports.config = configSchema.parse({
     frontendUrl: process.env.NODE_ENV === "development"
         ? "http://localhost:5173"
         : "https://authentication-app-frontend-five.vercel.app",
-    port: (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 5000,
+    port: process.env.PORT ?? 5000,
     databaseURL: process.env.NODE_ENV === "development"
         ? "mongodb://127.0.0.1:27017"
         : process.env.DB_URL,

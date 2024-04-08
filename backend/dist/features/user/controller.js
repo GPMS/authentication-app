@@ -1,42 +1,38 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userController = void 0;
+exports.UserController = void 0;
 const errors_1 = require("../../errors");
-const user_1 = require("../models/user");
-const userService_1 = require("./userService");
-exports.userController = {
-    getUserInfo: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const validateUpdateUserDTO_1 = require("./validateUpdateUserDTO");
+class UserController {
+    userService;
+    constructor(userService) {
+        this.userService = userService;
+    }
+    async getUserInfo(req, res, next) {
         if (!req.userId) {
             throw new Error("No user id");
         }
-        const userInfo = yield userService_1.userService.getUserInfo(req.userId);
+        const userInfo = await this.userService.getUserInfo(req.userId);
         if (!userInfo) {
             throw new errors_1.BadRequest(`no user with id ${req.userId}`);
         }
         res.send(userInfo);
-    }),
-    updateUserInfo: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("Update");
-        const updateBody = user_1.UserSchema.partial().safeParse(req.body);
-        if (!updateBody.success) {
-            const issues = updateBody.error.issues.map((issue) => issue.message);
-            throw new errors_1.BadRequest(issues.join("; "));
+    }
+    async updateUserInfo(req, res, next) {
+        try {
+            console.log("Update");
+            if (!req.userId) {
+                throw new Error("No user id");
+            }
+            const updateBody = (0, validateUpdateUserDTO_1.validateUpdateUserDTO)(req.body);
+            if (!(await this.userService.updateUserInfo(req.userId, updateBody))) {
+                throw new errors_1.BadRequest(`no user with id ${req.userId}`);
+            }
+            res.send();
         }
-        if (!req.userId) {
-            throw new Error("No user id");
+        catch (e) {
+            next(e);
         }
-        if (!(yield userService_1.userService.updateUserInfo(req.userId, updateBody.data))) {
-            throw new errors_1.BadRequest(`no user with id ${req.userId}`);
-        }
-        res.send();
-    }),
-};
+    }
+}
+exports.UserController = UserController;
