@@ -1,10 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const utils_1 = require("../utils");
 const controller_1 = require("../features/auth/controller");
 const errors_1 = require("../errors");
@@ -20,7 +16,7 @@ async function verifyToken(req, res, next) {
         token = req.cookies[controller_1.COOKIE_NAME];
         // If failed yet again throw error
         if (!token)
-            throw new errors_1.Forbidden("No token provided");
+            throw new errors_1.NoTokenError();
     }
     // Validate token
     try {
@@ -31,13 +27,7 @@ async function verifyToken(req, res, next) {
     }
     catch (err) {
         if (err) {
-            if (err instanceof jsonwebtoken_1.default.TokenExpiredError) {
-                console.warn("Token validation error: Token expired");
-            }
-            else {
-                console.warn("Token validation error:", err);
-            }
-            throw new errors_1.Forbidden("Invalid token");
+            throw new errors_1.InvalidTokenError(err);
         }
     }
 }

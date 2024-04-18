@@ -1,8 +1,7 @@
-import jwt from "jsonwebtoken";
 import { verifyJwt } from "../utils";
 import { COOKIE_NAME } from "../features/auth/controller";
-import { BadRequest, Forbidden } from "../errors";
 import { NextFunction, Request, Response } from "express";
+import { InvalidTokenError, NoTokenError } from "../errors";
 
 export async function verifyToken(
   req: Request,
@@ -18,7 +17,7 @@ export async function verifyToken(
     // Failed so try to get token from cookie
     token = req.cookies[COOKIE_NAME];
     // If failed yet again throw error
-    if (!token) throw new Forbidden("No token provided");
+    if (!token) throw new NoTokenError();
   }
 
   // Validate token
@@ -29,12 +28,7 @@ export async function verifyToken(
     next();
   } catch (err) {
     if (err) {
-      if (err instanceof jwt.TokenExpiredError) {
-        console.warn("Token validation error: Token expired");
-      } else {
-        console.warn("Token validation error:", err);
-      }
-      throw new Forbidden("Invalid token");
+      throw new InvalidTokenError(err as Error);
     }
   }
 }

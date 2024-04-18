@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { BadRequest } from "../../errors";
+import { NoUserWithIdError } from "../../errors";
 import { validateUpdateUserDTO } from "./validateUpdateUserDTO";
 import { UserService } from "./service";
 
@@ -14,7 +14,7 @@ export class UserController {
       }
       const userInfo = await this.userService.getUserInfo(req.userId);
       if (!userInfo) {
-        throw new BadRequest(`no user with id ${req.userId}`);
+        throw new NoUserWithIdError(req.userId);
       }
       res.send(userInfo);
     } catch (e) {
@@ -33,7 +33,7 @@ export class UserController {
         updateBody
       );
       if (!updatedUser) {
-        throw new BadRequest(`no user with id ${req.userId}`);
+        throw new NoUserWithIdError(req.userId);
       }
       res.send(updatedUser);
     } catch (e) {

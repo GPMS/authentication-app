@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { BadRequest, Forbidden, Conflict } from "../../errors";
+import {
+  EmailAlreadyRegisteredError,
+  InvalidEmailOrPasswordError,
+  OauthError,
+} from "../../errors";
 import { config } from "../../config";
 import { AuthService } from "./service";
 import { GithubProvider } from "./githubProvider";
@@ -19,7 +23,7 @@ export class AuthController {
       const { email, password } = validateAuthDTO(req.body);
       const token = await this.authService.register(email, password);
       if (!token) {
-        throw new Conflict(`User with email ${email} already exists`);
+        throw new EmailAlreadyRegisteredError(email);
       }
       res.cookie(COOKIE_NAME, token, { httpOnly: true });
       res.status(201).send({
@@ -35,7 +39,7 @@ export class AuthController {
       const { email, password } = validateAuthDTO(req.body);
       const token = await this.authService.login(email, password);
       if (!token) {
-        throw new Forbidden("Invalid email or password");
+        throw new InvalidEmailOrPasswordError();
       }
       res.cookie(COOKIE_NAME, token, { httpOnly: true });
       res.send({
@@ -68,7 +72,7 @@ export class AuthController {
     try {
       const code = req.query.code as string | undefined;
       if (!code) {
-        throw new BadRequest("Error during GitHub authentication");
+        throw new OauthError("Github");
       }
       const token = await this.authService.loginWithService(
         code,

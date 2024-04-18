@@ -17,7 +17,7 @@ class AuthController {
             const { email, password } = (0, validateAuthDTO_1.validateAuthDTO)(req.body);
             const token = await this.authService.register(email, password);
             if (!token) {
-                throw new errors_1.Conflict(`User with email ${email} already exists`);
+                throw new errors_1.EmailAlreadyRegisteredError(email);
             }
             res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
             res.status(201).send({
@@ -33,7 +33,7 @@ class AuthController {
             const { email, password } = (0, validateAuthDTO_1.validateAuthDTO)(req.body);
             const token = await this.authService.login(email, password);
             if (!token) {
-                throw new errors_1.Forbidden("Invalid email or password");
+                throw new errors_1.InvalidEmailOrPasswordError();
             }
             res.cookie(exports.COOKIE_NAME, token, { httpOnly: true });
             res.send({
@@ -66,7 +66,7 @@ class AuthController {
         try {
             const code = req.query.code;
             if (!code) {
-                throw new errors_1.BadRequest("Error during GitHub authentication");
+                throw new errors_1.OauthError("Github");
             }
             const token = await this.authService.loginWithService(code, this.githubProvider);
             res.redirect(`${config_1.config.frontendUrl}/user?token=${token}`);

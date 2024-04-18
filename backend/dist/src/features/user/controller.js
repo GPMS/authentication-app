@@ -15,7 +15,7 @@ class UserController {
             }
             const userInfo = await this.userService.getUserInfo(req.userId);
             if (!userInfo) {
-                throw new errors_1.BadRequest(`no user with id ${req.userId}`);
+                throw new errors_1.NoUserWithIdError(req.userId);
             }
             res.send(userInfo);
         }
@@ -31,7 +31,7 @@ class UserController {
             const updateBody = (0, validateUpdateUserDTO_1.validateUpdateUserDTO)(req.body);
             const updatedUser = await this.userService.updateUserInfo(req.userId, updateBody);
             if (!updatedUser) {
-                throw new errors_1.BadRequest(`no user with id ${req.userId}`);
+                throw new errors_1.NoUserWithIdError(req.userId);
             }
             res.send(updatedUser);
         }
