@@ -1,6 +1,5 @@
 import z from "zod";
-
-import { BadRequest } from "../../errors";
+import { ValidationError } from "../../errors";
 
 const updateUserDTO = z.object({
   email: z.string().email().optional(),
@@ -18,12 +17,7 @@ const updateUserDTO = z.object({
 export function validateUpdateUserDTO(body: object) {
   const updateBody = updateUserDTO.safeParse(body);
   if (!updateBody.success) {
-    const issues = updateBody.error.errors.map((e) => ({
-      field: e.path.join("."),
-      message: e.message,
-    }));
-    console.log(issues);
-    throw new BadRequest("bad request");
+    throw new ValidationError(updateBody.error.errors);
   }
   return updateBody.data;
 }
