@@ -15,21 +15,3 @@ export class CustomError extends Error {
     };
   }
 }
-
-export class BadRequest extends CustomError {
-  constructor(message: string) {
-    super(message, 400);
-  }
-}
-
-export class Conflict extends CustomError {
-  constructor(message: string) {
-    super(message, 409);
-  }
-}
-
-export class Forbidden extends CustomError {
-  constructor(message: string) {
-    super(message, 403);
-  }
-}
