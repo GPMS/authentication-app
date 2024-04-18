@@ -16,7 +16,7 @@ class UserService {
             newUserInfo.password = await (0, utils_1.hashPassword)(newUserInfo.password);
         }
         const updatedUser = await this.userRepository.update(userId, newUserInfo);
-        return updatedUser != null;
+        return updatedUser;
     }
 }
 exports.UserService = UserService;

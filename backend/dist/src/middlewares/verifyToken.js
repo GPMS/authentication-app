@@ -20,7 +20,7 @@ async function verifyToken(req, res, next) {
         token = req.cookies[controller_1.COOKIE_NAME];
         // If failed yet again throw error
         if (!token)
-            throw new errors_1.BadRequest("No token provided");
+            throw new errors_1.Forbidden("No token provided");
     }
     // Validate token
     try {

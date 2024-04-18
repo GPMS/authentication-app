@@ -18,7 +18,7 @@ export async function verifyToken(
     // Failed so try to get token from cookie
     token = req.cookies[COOKIE_NAME];
     // If failed yet again throw error
-    if (!token) throw new BadRequest("No token provided");
+    if (!token) throw new Forbidden("No token provided");
   }
 
   // Validate token
