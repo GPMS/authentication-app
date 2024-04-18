@@ -8,7 +8,7 @@ export function handleErrors(
   next: NextFunction
 ) {
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({ message: err.message });
+    return res.status(err.statusCode).json(err.body);
   }
   console.log(err);
   return res.status(500).send("Something went wrong try again later");

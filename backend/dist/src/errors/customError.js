@@ -3,9 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Forbidden = exports.Conflict = exports.BadRequest = exports.CustomError = void 0;
 class CustomError extends Error {
     statusCode;
-    constructor(message, statusCode) {
+    body;
+    constructor(message, statusCode, desc = {}) {
         super(message);
         this.statusCode = statusCode;
+        this.body = {
+            message,
+            ...desc,
+        };
     }
 }
 exports.CustomError = CustomError;

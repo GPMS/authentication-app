@@ -15,11 +15,7 @@ exports.authDTO = zod_1.default.object({
 function validateAuthDTO(body) {
     const authBody = exports.authDTO.safeParse(body);
     if (!authBody.success) {
-        const issues = authBody.error.errors.map((e) => ({
-            field: e.path.join("."),
-            message: e.message,
-        }));
-        throw new errors_1.BadRequest("bad request");
+        throw new errors_1.ValidationError(authBody.error.errors);
     }
     return authBody.data;
 }

@@ -21,12 +21,7 @@ const updateUserDTO = zod_1.default.object({
 function validateUpdateUserDTO(body) {
     const updateBody = updateUserDTO.safeParse(body);
     if (!updateBody.success) {
-        const issues = updateBody.error.errors.map((e) => ({
-            field: e.path.join("."),
-            message: e.message,
-        }));
-        console.log(issues);
-        throw new errors_1.BadRequest("bad request");
+        throw new errors_1.ValidationError(updateBody.error.errors);
     }
     return updateBody.data;
 }
