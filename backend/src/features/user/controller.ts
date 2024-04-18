@@ -28,10 +28,14 @@ export class UserController {
         throw new Error("No user id");
       }
       const updateBody = validateUpdateUserDTO(req.body);
-      if (!this.userService.updateUserInfo(req.userId, updateBody)) {
+      const updatedUser = await this.userService.updateUserInfo(
+        req.userId,
+        updateBody
+      );
+      if (!updatedUser) {
         throw new BadRequest(`no user with id ${req.userId}`);
       }
-      res.send();
+      res.send(updatedUser);
     } catch (e) {
       next(e);
     }
